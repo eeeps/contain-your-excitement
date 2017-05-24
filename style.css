@@ -45,12 +45,14 @@ html, body { margin: 0; padding: 0; }
 	font-family: menlo, monospace;
 	font-size: 8vmin;
 	line-height: 1.2;
+	tab-size: 2;
 	--dark-bg: #0E2F5A;
 	--light-bg: #0071BA;
 	--black: #231F20;
 	--dark-fg: #DB8226;
 	--light-fg: #F2D865;
 	--white: white;
+	--box-shadow: -0.05em 0.05em 0.25em 0 rgba(0, 0, 0, 0.5);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -123,10 +125,29 @@ section.title h1 {
 	visibility: hidden;
 }
 
+.resizable {
+	resize: horizontal;
+	overflow: scroll;
+	border-radius: 1vmin;
+	box-shadow: var( --box-shadow );
+	/* argh https://bugs.chromium.org/p/chromium/issues/detail?id=94583 */
+	width: 1em;
+	height: 1em;
+}
+
+pre {
+	background-color: var(--black);
+	font-size: 0.3rem;
+	border-radius: 1vmin;
+	padding: 0em 1em 1em 1em;
+}
+
+
 .notes {
 	display: none;
 }
 
 .twox {
-	font-style: 'SooperSerifThinCondensed2x';
+	font-family: 'SooperSerifThinCondensed2x';
+	text-transform: uppercase;
 }

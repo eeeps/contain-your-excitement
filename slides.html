@@ -4,16 +4,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="style.css" />
 <script defer src="slideshow.js"></script>
+<script defer src="named-element-breakpoints.js"></script>
 <title>Slides</title>
 </head>
 <body>
 
 <section id="1" class="title">
-	<h1>Contain Your Excitement</h1>
-	<p style=""
-
-	>
-	Eric Portis ★ SmashingConf NYC 2017 ★ 2017-06-13</p>
+	<h1>
+		<span>Contain</span>
+		<span class="twox" style="display: block; border-top: 1px solid white;">Your Excitement</span>
+	</h1>
+	<hr style="width: 10em; margin: 0;" />
+	<p class="twox center" style="color: var(--light-fg);">
+		Eric Portis ★ SmashingConf NYC ★ 2017-06-13
+	</p>
 </section>
 
 <section class="title" id="2">
@@ -22,7 +26,7 @@
 		style="
 			border-radius: 100%;
 			border: 0.175em solid var( --light-bg );
-			box-shadow: -0.05em 0.05em 0.25em 0 rgba(0, 0, 0, 0.5);
+			box-shadow: var( --box-shadow );
 			margin-top: -0.5em;
 			margin-left: 5em;
 			width: 4em;
@@ -53,7 +57,7 @@ I wonder.
 	<script>
 		var section = document.currentScript.parentNode;
 		
-		section.init = ( function() {
+		section.init = ( ( section ) => {
 			section.elementsToReveal = [
 				section.querySelector( '#headshot' ),
 				section.querySelector( '#eric-arrow' )
@@ -65,12 +69,12 @@ I wonder.
 		
 		section.events = [
 			{
-				do: function() {
+				do: ( section ) => {
 					for ( element of section.elementsToReveal ) {
 						element.classList.remove( 'hidden' );
 					}
 				},
-				undo: function() {
+				undo: ( section ) => {
 					for ( element of section.elementsToReveal ) {
 						element.classList.add( 'hidden' );
 					}
@@ -88,8 +92,51 @@ Ok, what are
 	</aside>
 </section>
 
-<section id="3">
-<h1>Enter sizes.</h1>
+<section id="2" class="title">
+	<h1>Element queries</h1>
+	<p class="center">What’s the big idea?</p>
+	<aside class="notes">
+Ok, what are
+	</aside>
+</section>
+
+<section id="3" class="code">
+<h1>We only care about the width</h1>
+<div style="--height: 5em; height: var(--height);">
+	<div class="resizable" id="example_1495648141" style="height: 100%; max-width: 100%; background-color: white;">
+		<style>
+			#example_1495648141 .container {
+				display: grid;
+				--margin: 0.25rem;
+				grid-template-columns: repeat(auto-fit, minmax(0.125rem, 1fr) ) ;
+				grid-gap: var(--margin);
+				margin: var(--margin);
+			}
+			#example_1495648141 .block {
+				--named-breakpoints: 2em make-it-blue;
+				height: calc( var(--height) - var(--margin) * 2 );
+				background-color: var(--light-fg);
+
+			}
+			#example_1495648141 .block.make-it-blue {
+				background-color: hotpink;
+			}
+
+		</style>
+		<div class="container">
+			<div class="block"></div>
+			<div class="block"></div>
+						<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
+		</div>
+	</div>
+</div>
+<pre><code>
+.block:media(width > 5em) {
+	color: hotpink;
+}
+</code></pre>
 <p>Sizes just tells the browser how big that box is gonna be.</p>
 </section>
 

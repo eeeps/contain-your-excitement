@@ -29,7 +29,7 @@ for ( slide of slides ) {
 	
 	// do any setup
 	if ( slide.init !== undefined ) {
-		slide.init();
+		slide.init( slide );
 	}
 	
 	// and queue up first event
@@ -49,7 +49,7 @@ window.addEventListener( 'keydown', function( event ) {
 		// if there are events to do, do ’em
 		if ( currentSlide.nextEvent !== undefined ) {
 			
-			currentSlide.nextEvent.do();
+			currentSlide.nextEvent.do( currentSlide );
 			currentSlide.previousEvent = currentSlide.nextEvent;
 			currentSlide.nextEvent = currentSlide.events[
 				currentSlide.events.indexOf( currentSlide.nextEvent ) + 1 ];
@@ -72,7 +72,7 @@ window.addEventListener( 'keydown', function( event ) {
 		// if there are events to undo, undo them
 		if ( currentSlide.previousEvent !== undefined ) {
 			
-			currentSlide.previousEvent.undo();
+			currentSlide.previousEvent.undo( currentSlide );
 			currentSlide.nextEvent = currentSlide.previousEvent;
 			currentSlide.previousEvent = currentSlide.events[
 				currentSlide.events.indexOf( currentSlide.previousEvent ) - 1 ];

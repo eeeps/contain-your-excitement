@@ -1,0 +1,90 @@
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+:root {
+	font-family: menlo, monospace;
+	font-size: 8vmin;
+	line-height: 1.2;
+	--dark-bg: #0E2F5A;
+	--light-bg: #0071BA;
+	--black: #231F20;
+	--dark-fg: #DB8226;
+	--light-fg: #F2D865;
+	--white: white;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	line-height: 0.8625;
+	font-weight: 400;
+	margin: 0;
+}
+
+p, ul, ol, dl {
+	line-height: 0.8265;
+	font-family: 'Sooper Serif';
+	margin: 0.375em 0 0 0;
+}
+
+.center {
+	text-align: center;
+}
+
+section {
+	width: 100vw;
+	height: 100vh;
+	overflow: hidden;
+	background-color: var( --light-bg );
+	color: var( --white );
+	font-family: 'Sooper Sans';
+	border-bottom: 1px solid rgba(100%, 100%, 100%, 0.1);
+	position: relative;
+}
+
+section, .layer {
+	/* "Gridded Headings" technique from Eric Meyer
+	    http://meyerweb.com/eric/thoughts/2017/05/19/gridded-headings/ */
+	display: grid;
+	grid-template-columns:
+		minmax(1em, 1fr)
+		minmax(min-content, max-content)
+		minmax(1em, 1fr);
+	align-items: center;
+	align-content: center;
+}
+
+section > *, .layer > * {
+	grid-column: 2 / 2;
+}
+
+.layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+section.title {
+	background-color: var( --dark-bg );
+}
+
+section.code {
+	background-color: var( --black );
+}
+
+section.title h1 {
+	font-size: 15vmin;
+	text-transform: uppercase;
+	text-align: center;
+	text-shadow: -0.025em 0.025em var( --dark-fg );
+	color: var( --light-fg );
+}
+
+[data-hidden="hidden"], .hidden {
+	visibility: hidden;
+}
+
+.notes {
+	display: none;
+}

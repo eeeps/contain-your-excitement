@@ -14,6 +14,7 @@ const intersectionObserver = new IntersectionObserver( entries =>
 		
 		// show the presenter’s notes
 		if ( currentSlide.querySelector('.notes') !== null ) {
+			console.clear();
 			console.log(currentSlide.querySelector('.notes').innerHTML);
 		}
 		

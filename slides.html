@@ -5,6 +5,9 @@
 <link rel="stylesheet" href="style.css" />
 <script defer src="slideshow.js"></script>
 <script defer src="named-element-breakpoints.js"></script>
+<link rel="stylesheet" href="prism.css" />
+<script defer src="prism.js"></script>
+<script defer src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 <title>Slides</title>
 </head>
 <body>
@@ -85,60 +88,278 @@ I wonder.
 </section>
 
 <section id="2" class="title">
-	<h1>Element queries</h1>
-	<p class="center">What’s the big idea?</p>
+	<h1>What’s an Element Query?</h1>
+	<p>What’s wrong with media queries?</p>
 	<aside class="notes">
-Ok, what are
+AKA, w
 	</aside>
 </section>
 
-<section id="2" class="title">
-	<h1>Element queries</h1>
-	<p class="center">What’s the big idea?</p>
+<section id="2">
+	<h1>Media queries are a whole-viewport-solution...</h1>
+	<p>...designed to solve whole-document problems.</p>
 	<aside class="notes">
-Ok, what are
+It’s worth thinking about where Media Queries came from.
+
+How many of you 
 	</aside>
 </section>
 
 <section id="3" class="code">
-<h1>We only care about the width</h1>
-<div style="--height: 5em; height: var(--height);">
-	<div class="resizable" id="example_1495648141" style="height: 100%; max-width: 100%; background-color: white;">
+<pre><code class="language-html">
+&lt;link rel="stylesheet" type="text/css" 
+  media="screen" href="sans-serif.css"&gt;
+&lt;link rel="stylesheet" type="text/css" 
+  media="print" href="serif.css"&gt;
+</code></pre>
+<p>Example from <a href="https://www.w3.org/TR/2002/CR-css3-mediaqueries-20020708/">the original Media Queries specification</a>, published in 2002.</p>
+</section>
+
+<section id="2">
+	<h1>Media queries are a whole-viewport-solution...</h1>
+	<p>...designed to solve whole-document problems.</p>
+	<aside class="notes">
+Over the last decade, one web platform feature has had an outsized impact on the way we think, work, and build: Media Queries. Layouts that adapt to fit varied browsing contexts have allowed the web to flourish throughout the mobile revolution; more deeply, our industry’s wholehearted embrace of “responsive” adaptability has been a huge win for the web’s most fundamental goal: universal access to information.
+
+And yet! Keying our responsiveness on the state of the entire viewport, rather than on the bits and pieces that fill it up, has felt increasingly like a kludge. The ability to adapt components’ designs based on their own state is an obvious next step.
+	</aside>
+</section>
+
+
+<section id="3" class="code">
+<pre><code class="language-css">
+.block {
+	background-color: lightblue; 
+}
+
+@media (min-width: 500px) {
+	.block {
+		background-color: deeppink;
+	}
+}
+</code></pre>
+</section>
+
+<section id="4" class="code">
+<div style="--height: 4em; height: var(--height); width: 100vw;">
+	<div class="resizable" id="example_1495648141"
+		style="
+			height: 100%;
+			width: var(--height);
+			max-width: 100%; /* dosent do anything argh */
+			background-color: white;
+		"
+	>
 		<style>
 			#example_1495648141 .container {
 				display: grid;
 				--margin: 0.25rem;
-				grid-template-columns: repeat(auto-fit, minmax(0.125rem, 1fr) ) ;
+				grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
 				grid-gap: var(--margin);
 				margin: var(--margin);
 			}
 			#example_1495648141 .block {
-				--named-breakpoints: 2em make-it-blue;
+				--named-breakpoints: 100px make-it-blue;
 				height: calc( var(--height) - var(--margin) * 2 );
-				background-color: var(--light-fg);
+				background-color: lightblue;
 
 			}
 			#example_1495648141 .block.make-it-blue {
-				background-color: hotpink;
+				background-color: deeppink;
 			}
 
 		</style>
 		<div class="container">
 			<div class="block"></div>
 			<div class="block"></div>
-						<div class="block"></div>
+			<div class="block"></div>
 			<div class="block"></div>
 			<div class="block"></div>
 		</div>
 	</div>
 </div>
-<pre><code>
-.block:media(width > 5em) {
-	color: hotpink;
+<pre><code class="language-css">
+.block {
+	background-color: lightblue; 
+}
+
+.block:media(min-width: 100px) {
+	background-color: deeppink;
 }
 </code></pre>
-<p>Sizes just tells the browser how big that box is gonna be.</p>
 </section>
+
+<section id="5">
+<h1 class="center">Pretty neat!</h1>
+<p>Now show me something useful?</p>
+</section>
+
+<section id="5">
+<h1>Other use cases</h1>
+<ul>
+	<li>interactive/user-generated content</li>
+	<li>modular components!</li>
+	<li>any sort of design where you don't want to bake a bunch of external state into styles on specific elements</li>
+</ul>
+<aside class="notes">
+
+</aside>
+</section>
+
+<section class="title">
+<h1>People have been asking</h1>
+<p>for element queries</p>
+<aside class="notes">
+
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">We need native CSS media queries at the element/component/widget level, not just the viewport. Make it so, internetz.</p>&mdash; Nicolas (@necolas) <a href="https://twitter.com/necolas/status/299573744307941376">February 7, 2013</a></blockquote>
+<aside class="notes">
+Here’s the first real mention I found of the general concept of “element queries,” tweeted by twitter engineer Nicolas Gallagher all the way back in 2013.
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Great read about the #1 missing tool for responsive design: Element queries  <a href="http://t.co/EARts4HWWr">http://t.co/EARts4HWWr</a> (viewport queries are still valuable)</p>&mdash; Brad Frost 🇺🇸 (@brad_frost) <a href="https://twitter.com/brad_frost/status/319929504422322176">April 4, 2013</a></blockquote>
+<aside class="notes">
+Within months, some of the smartest minds in the indsutry were already calling it the – quote – #1 missing tool for responsive design.
+</aside>
+</section>
+
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Ahh, Spring—when a young man’s fancy turns to thoughts of element queries, what that syntax might look like, and how one might prototype it.</p>&mdash; Mat Marquis (@wilto) <a href="https://twitter.com/wilto/status/466673241130430464">May 14, 2014</a></blockquote>
+<aside class="notes">
+And within a year, people started getting serious about turning this exciting idea into an empowering reality.
+
+But. There were problems. More on those later.
+
+For now, I just want to take you on a multi-year journey of building impatience and crushing dispair.
+</aside>
+</section>
+
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Monthly tweet about how _super_ helpful natively supported element queries would be.</p>&mdash; Tim Kadlec (@tkadlec) <a href="https://twitter.com/tkadlec/status/493849870554259457">July 28, 2014</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Why element queries?<br><br>Less CSS to write, more modular &amp; maintainable CSS/HTML, smarter responsive images, web components, etc.</p>&mdash; Tim Kadlec (@tkadlec) <a href="https://twitter.com/tkadlec/status/493852410700247041">July 28, 2014</a></blockquote>
+<aside class="notes">
+It starts innocently enough, with earnest pleas and sound arguments.
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Coulda used ElementQueries about 45 times today.</p>&mdash; Dave Rupert (@davatron5000) <a href="https://twitter.com/davatron5000/status/558402932509401088">January 22, 2015</a></blockquote>
+<aside class="notes">
+But by 2015, impaitence had started to set in.
+</aside>
+</section>
+
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">hypothesis<br><br>If element queries were real, over 50% of the media queries we write would be element queries.</p>&mdash; Chris Coyier (@chriscoyier) <a href="https://twitter.com/chriscoyier/status/668796363900100613">November 23, 2015</a></blockquote>
+<aside class="notes">
+Front end developers began do wonder... does anyone understand what a big deal element queries would be?
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">That time of day when you run into a CSS layout that’s going to be a total hack job to build without element/container queries.</p>&mdash; Scott Jehl (@scottjehl) <a href="https://twitter.com/scottjehl/status/723575660065726465">April 22, 2016</a></blockquote>
+<aside class="notes">
+Is anyone out there listening?
+</aside>
+
+
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">are container queries here yet<br><br>dot tumblr dot corn</p>&mdash; Ethan Marcotte (@beep) <a href="https://twitter.com/beep/status/723156713373732865">April 21, 2016</a></blockquote>
+<aside class="notes">
+A dark and dry humor began to creep into the conversation
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Well, I tried. <a href="https://t.co/mCfx2Tor0O">pic.twitter.com/mCfx2Tor0O</a></p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/743219273275826176">June 15, 2016</a></blockquote>
+<aside class="notes">
+Attempts at absurd humor
+</aside>
+</section>
+
+<section>
+<!--
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">conspiracy theories<br>conspiracy queries<br>container queries<a href="https://twitter.com/hashtag/emghazi?src=hash">#emghazi</a></p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/748624323955482624">June 30, 2016</a></blockquote>
+-->
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">FUTURE BROWSER v154.2 release notes<br>* JS engine optimizations—technically now a time machine<br>* nothing on container queries yet—stop asking</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/748241672757084160">June 29, 2016</a></blockquote>
+<aside class="notes">
+Hopelessness
+</aside>
+</section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="und" dir="ltr">I want my <br>element <br>element<br>element<br>I want my element<br>element<br>element<br>element<br>Chilis element queries, Chilis element queries<br>barbecue sauce</p>&mdash; Brad Frost 🇺🇸 (@brad_frost) <a href="https://twitter.com/brad_frost/status/765926034604695552">August 17, 2016</a></blockquote>
+<aside class="notes">
+The situation drove some completely mad
+</aside>
+</section>
+
+
+
+<!--
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">👏 Everything 👏 I 👏 build 👏 needs 👏 element 👏 queries 👏</p>&mdash; OUTNMBRD (@marcamos) <a href="https://twitter.com/marcamos/status/791092232317177856">October 26, 2016</a></blockquote>
+</section>
+-->
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The fact that we’ll probably get stable, cross browser WebVR before container queries is a good example of what’s wrong with our industry.</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/790926735156011008">October 25, 2016</a></blockquote>
+<aside class="notes">
+The truest tweets were the saddest of all
+</aside>
+</section>
+
+<!--
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I&#39;d give my little finger for well-supported element queries right now.</p>&mdash; Bro(ton)grammer (@joshbroton) <a href="https://twitter.com/joshbroton/status/839157248693792771">March 7, 2017</a></blockquote>
+</section>
+-->
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/grigs">@grigs</a> DO CONTAINER QUERIES NEXT <a href="https://t.co/fVT8NXGnqQ">pic.twitter.com/fVT8NXGnqQ</a></p>&mdash; Ethan Marcotte (@beep) <a href="https://twitter.com/beep/status/862791570826960896">May 11, 2017</a></blockquote>
+<aside class="notes">
+But for those who, in 2017, still nurture hope, the message is loud and clear
+</aside>
+</section>
+
+<section class="title">
+<h1>How do we do element queries?</h1>
+<p>...or “container” queries or whatever</p>
+</section>
+
+
+
+<section class="title">
+<h1>Is anyone doing element queries?</h1>
+<p>Yes. Slowly.</p>
+</section>
+
+<section class="title">
+<h1>In the wild</h1>
+<ul>
+<li>Spotify backend</li>
+<li>weather.com news modules</li>
+<li>some real estate website...</li>
+</ul>
+<p>source: dave rupert gist</p>
+</section>
+
+<section class="title">
+<h1>Speculative polyfills</h1>
+<p>cq-prollyfill, eqcss</p>
+</section>
+
+
 
 </body>
 </html>

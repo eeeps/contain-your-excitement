@@ -65,6 +65,27 @@ p, ul, ol, dl {
 	font-family: 'SooperSerifThinCondensed';
 	margin: 0.375em 0 0 0;
 }
+li {
+	margin-bottom: 0.125em;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	position: relative;
+}
+
+a:before { /* custom underline */
+	position: absolute;
+	content: '';
+	left: 0;
+	top: 0.85em;
+	width: 100%;
+	border-bottom: 0.05em solid rgba(255,255,255, 0.5);
+}
+	a:hover:before  { border-bottom-color: rgba(255,255,255, 1); }
+	a:active        { color: var(--light-fg); }
+	a:active:before { border-bottom-color: var(--light-fg); }
 
 .center {
 	text-align: center;
@@ -107,6 +128,7 @@ section > *, .layer > * {
 
 section.title {
 	background-color: var( --dark-bg );
+	text-align: center;
 }
 
 section.code {
@@ -116,7 +138,6 @@ section.code {
 section.title h1 {
 	font-size: 15vmin;
 	text-transform: uppercase;
-	text-align: center;
 	text-shadow: -0.025em 0.025em var( --dark-fg );
 	color: var( --light-fg );
 }
@@ -136,8 +157,8 @@ section.title h1 {
 }
 
 pre {
-	background-color: var(--black);
-	font-size: 0.3rem;
+	background-color: var(--black) !important;
+	font-size: 0.35rem;
 	border-radius: 1vmin;
 	padding: 0em 1em 1em 1em;
 }
@@ -150,4 +171,11 @@ pre {
 .twox {
 	font-family: 'SooperSerifThinCondensed2x';
 	text-transform: uppercase;
+}
+
+twitterwidget {
+	box-shadow: var(--box-shadow);
+}
+twitterwidget::shadow .Tweet-brand {
+	display: none;
 }

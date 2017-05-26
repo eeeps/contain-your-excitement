@@ -21,9 +21,7 @@ let r = new ResizeObserver( entries => {
 		
 		for ( let i = 0, l = entry.target.breakpoints.length; i < l; i++ ) {
 			
-			if ( ( entry.contentRect.width >= entry.target.breakpoints[ i ] ) &&
-			     ( ( entry.contentRect.width < entry.target.breakpoints[ i + 1 ] ) ||
-			       ( entry.target.breakpoints[ i + 1 ] === undefined ) ) ) {
+			if ( entry.contentRect.width >= entry.target.breakpoints[ i ] )  {
 
 				entry.target.classList.add( entry.target.classNames[ i ] );
 

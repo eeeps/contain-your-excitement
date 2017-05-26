@@ -129,16 +129,11 @@ How many of you
 <p>Example from <a href="https://www.w3.org/TR/2002/CR-css3-mediaqueries-20020708/">the original Media Queries specification</a>, published in 2002.</p>
 </section>
 
-<section id="2">
-	<h1>Media queries are a whole-viewport-solution...</h1>
-	<p>...designed to solve whole-document problems.</p>
-	<aside class="notes">
+<!--
 Over the last decade, one web platform feature has had an outsized impact on the way we think, work, and build: Media Queries. Layouts that adapt to fit varied browsing contexts have allowed the web to flourish throughout the mobile revolution; more deeply, our industry’s wholehearted embrace of “responsive” adaptability has been a huge win for the web’s most fundamental goal: universal access to information.
 
 And yet! Keying our responsiveness on the state of the entire viewport, rather than on the bits and pieces that fill it up, has felt increasingly like a kludge. The ability to adapt components’ designs based on their own state is an obvious next step.
-	</aside>
-</section>
-
+-->
 
 <section id="3" class="code">
 <pre><code class="language-css">
@@ -263,7 +258,7 @@ And within a year, serious efforts were underway to turn what had been an exciti
 
 But. There were problems. More on those later.
 
-For now, I just want to look at a bunch of increasingly sad and desparate tweets.
+For now, I want to kind of track developer sentiment about element queries over the years, via a series of increasingly sad and desparate tweets.
 </aside>
 </section>
 
@@ -386,11 +381,91 @@ But for those who, in 2017, still nurture hope, the message is loud and clear
 </section>
 
 <section class="title">
-<h1>How do we do element queries?</h1>
-<p>...or “container” queries or whatever</p>
+<h1>What’s the hold up?</h1>
+<aside class="notes">
+Before we can talk about that, need to talk about how browsers work.
+</aside>
 </section>
 
+<section>
+<h1>Browsers</h1>
+<p>[browser diagram goes here]</p>
+<aside class="notes">
+HTML → DOM
+            >→ Rendering tree → Box tree → Layout 
+CSS → CSSOM
+</aside>
+</section>
 
+<section>
+<h1>Layout depending on layout</h1>
+<p>Three problems</p>
+<div style="font-size: 0.4em; font-family: sans-serif !important;">
+<ol>
+	<li>Potential for Circularity
+		<ol>
+			<li>As millions of Microsoft Excel know, cicular references are bad and confusing [screenshot]</li>
+			<li>Fun demo!
+				<ol>
+					<li>anything that changes the width</li>
+				</ol>
+			</li>
+			<li>Container queries idea
+				<li>first iteration, nah
+					<ol>
+						<li>because containers can depend on the width of their contents
+						</li>
+					</ol>
+				</li>
+				<li>Ausi’s, yeah?</li>
+			</li>
+			<li>A blunter tool: <code>contain: strict;</code>
+				<ol>
+					<li>Is this going to be weird and limiting?</li>
+				</ol>
+			</li>
+		</ol>
+	</li>
+	<li>Breaks a fundamental assumption of browser layout engines
+		<ol>
+			<li>1-pass layout.</li>
+			<li>Again, layout is really complicated</li>
+			<li>Browsers were built to go from rendering tree → layout exactly once. Always have, are heavily optimized around that assumption, and talk about changing it with scary words like “fundamental architectural layering violation”</li>
+			<li>Not impossible, but a whole, whole lot of work</li>
+		</ol>
+	</li>
+	<li>Fundamentally slow
+		<ol>
+			<li>Despite being so complicated, layout needs to happen FAST</li>
+			<li>You can re-architect layout engines to make two-pass layout possible, but it’s always going to be slower, and opens the door for extreme slowness. 
+				<ol>
+					<li>(nested 2 pass layouts, even if none are infinte)</li>
+					<li>Dave baron quote</li>
+				</ol>
+			</li>
+			<li>Resizing, specifically, is a very hot path - potentially having to re-do large swaths of potentially-many-pass layout on every frame is REALLY BAD
+				<ol>
+					<li>Example?</li>
+				</ol>
+			</li>
+			<li>We’ve made this mistake before: microsoft’s mistake</li>
+			<li>Solution: Asynchronous
+				<ol>
+					<li>What is a synchronus</li>
+					<li>ResizeObserver</li>
+				</ol>
+			</li>
+		</ol>
+	</li>
+</ol>
+</div>
+<aside class="notes">
+Before we can talk about that, need to talk about how browsers work.
+</aside>
+</section>
+
+<section>
+</section>
 
 <section class="title">
 <h1>Is anyone doing element queries?</h1>
@@ -410,6 +485,19 @@ But for those who, in 2017, still nurture hope, the message is loud and clear
 <section>
 <h1>Speculative polyfills</h1>
 <p>cq-prollyfill, eqcss</p>
+</section>
+
+<section>
+<h1>What can you do?</h1>
+<p>If you know some C and have been looking to get your hands dirty</p>
+<aside class="notes">
+Authors who are actually going to use the thing
+Spec editors who can specify it
+Browser vendors who are willing + able to implement it
+	- Yoav took the RICG over the line with responsive images, took a deep dive into performance, networking, and resource loading
+	- Layout engine is another dragon. The web needs another knight in shining armor.
+
+</aside>
 </section>
 
 

@@ -146,6 +146,10 @@ section.title h1 {
 	visibility: hidden;
 }
 
+.none {
+	display: none !important;
+}
+
 .resizable {
 	resize: horizontal;
 	overflow: scroll;
@@ -163,6 +167,9 @@ pre {
 	padding: 0em 1em 1em 1em;
 }
 
+footer {
+	font-size: 0.75em;
+}
 
 .notes {
 	display: none;

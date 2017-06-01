@@ -90,66 +90,207 @@ I wonder.
 	</script>
 </section>
 
+<section class="whatido" style="align-content: stretch;">
+<style>
+.whatido ul {
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-around;
+	height: 100%;
+	padding-bottom: 10vh;
+	padding-top: 10vh;
+}
+.whatido .what {
+	font-family: SooperSerifThinCondensed2x;
+	text-transform: uppercase;
+	font-size: 1.5em;
+	display: block;
+}
+.whatido .where {
+	color: var(--light-fg);
+	font-size: 0.75em;
+	display: block;
+}
+</style>
+<ul>
+<li><span class="what">Developer Advocate</span> <span class="where">@ Cloudinary</span></li>
+<li><span class="what">Hanger-on</span> <span class="where">@ Responsive Issues Community Group</li>
+<li><span class="what">Lapsed printmaker-photographer</span> <span class="where">@ Remote Island in Puget Sound</li>
+</ul>
+<aside class="notes">
+Developer Evangelist at Cloudinary, which is an image back-end for web and mobile developers. We help you manage image upload, storage, manipulation, and delivery. If you work with images, especially responsive images, like the ones I’ll be talking about tonight — Cloudinary can help you do that work better.
+
+Before I worked at cloudinary, I managed the web store of a tiny fine art print shop in Denver Colorado… and got *really* upset with the way images worked within responsive layouts… yadda yadda yadda, I was spending hours in WHATWG mailing lists and writing a weekly newsletter for the responsie images community group, which spec’d and implemented the features I’m going to be talkign about today
+
+I still like art, and I live on an island now where I kind of wander around and take weird infared photographs of kelp and things…
+the island is called orcas island ; if any of you are ever out in the san juans ; it’s beautiful and you should all come visit
+
+but enough about me
+</aside>
+</section>
+
+<section id="2" class="title">
+	<h1>Element queries!</h1>
+	<div class="layer">
+		<p style="
+			position: relative;
+			left: -3.33rem;
+			top: -0.125em;
+			margin-top: -2px;
+			font-size: 1.33em;
+			text-transform: uppercase;
+			padding: 0.25em;
+			padding-bottom: 0.05em;
+			rotate: -7deg;
+			background-color: var(--light-bg);
+			box-shadow: var(--box-shadow);
+			font-family: SooperSansThick;
+			border-radius: 0.1em;
+		">
+			Container?
+		</p>
+	</div>
+	<aside class="notes">
+Let’s talk about element queries!
+
+[click]
+
+Or container queries, or whatever.
+I suppose a brief note on terminology is in order
+	</aside>
+	<script>
+		var section = document.currentScript.parentNode;
+
+		section.init = ( ( section ) => {
+			section.stickerLayer = section.querySelector( '.layer' );
+			section.stickerLayer.classList.add('hidden');
+		} );
+		
+		section.events = [
+			{
+				do: ( section ) => {
+					section.stickerLayer.classList.remove('hidden');
+				},
+				undo: ( section ) => {
+					section.stickerLayer.classList.add('hidden');
+				}
+			}
+		];
+	</script>
+</section>
+
 <section class="center">
-<p>“Element” queries? “Container” queries?</p>
+<p style="font-size: 1.5em;">“Element?” “Container?”</p>
 <h1 style="margin-top: 0.25em;">Same-same.</h1>
 <aside class="notes">
-A brief note on terminology...
-
-We‘ll get into those differences a bit later, but during the first part of the talk I’m going to quote some people and use the terms myself more or less interchangably.
+We’ll get into the distinction between “element” and “container” queries a bit later, but for the first part of this talk, I and some folks that I’ll be quoting will use the terms more or less interchangably.
 </aside>
 </section>
 
 
-<section id="2" class="title">
-	<h1>What’s an Element Query?</h1>
-	<p>What’s wrong with media queries?</p>
-	<aside class="notes">
-AKA, w
-	</aside>
+<section class="center">
+<p>Whatever you call them, they’re</p>
+<h1 style="margin-top: 0.25em;">media queries for elements</h1>
+<aside class="notes">
+And I’ll be using the terms to refer to an idea. In a nutshell: we should be able to adapt element’s styles based on their own state. Not just the state of the entire viewport.
+</aside>
 </section>
+
 
 <section id="2">
 	<h1>Media queries are a whole-viewport-solution...</h1>
 	<p>...designed to solve whole-document problems.</p>
 	<aside class="notes">
-It’s worth thinking about where Media Queries came from.
+It’s worth taking a moment to think about about where Media Queries came from.
 
-How many of you 
+How many of are old enough to have written a print-specific stylesheet?
 	</aside>
 </section>
 
-<section id="3" class="code">
-<pre><code class="language-html">
-&lt;link rel="stylesheet" type="text/css" 
-  media="screen" href="sans-serif.css"&gt;
-&lt;link rel="stylesheet" type="text/css" 
-  media="print" href="serif.css"&gt;
-</code></pre>
-<p>Example from <a href="https://www.w3.org/TR/2002/CR-css3-mediaqueries-20020708/">the original Media Queries specification</a>, published in 2002.</p>
-</section>
-
-<!--
-Over the last decade, one web platform feature has had an outsized impact on the way we think, work, and build: Media Queries. Layouts that adapt to fit varied browsing contexts have allowed the web to flourish throughout the mobile revolution; more deeply, our industry’s wholehearted embrace of “responsive” adaptability has been a huge win for the web’s most fundamental goal: universal access to information.
-
-And yet! Keying our responsiveness on the state of the entire viewport, rather than on the bits and pieces that fill it up, has felt increasingly like a kludge. The ability to adapt components’ designs based on their own state is an obvious next step.
--->
 
 <section id="3" class="code">
-<pre><code class="language-css">
-.block {
-	background-color: lightblue; 
-}
 
-@media (min-width: 500px) {
-	.block {
-		background-color: deeppink;
-	}
+<pre class="before" style="height: 8em;"><code class="language-html">
+&lt;link rel="stylesheet" type="text/css" 
+  media="screen" href="screen.css"&gt;
+&lt;link rel="stylesheet" type="text/css" 
+  media="print" href="print.css"&gt;
+</code></pre>
+
+<pre class="after" style="height: 8em;"><code class="language-css">
+@media print {
+  * { font-family: serif }
 }
 </code></pre>
+
+<pre class="afterafter" style="height: 8em;"><code class="language-css">
+@media screen and (min-width: 400px) {
+	...
+}
+</code></pre>
+
+<footer><p>Example from <a href="https://www.w3.org/TR/2002/CR-css3-mediaqueries-20020708/">the original Media Queries specification</a>, published in 2002.</p></footer>
+
+<aside class="notes">
+Well the original media queries spec, published fifteen years ago next month, opens with the following example. This is something that I’m just barely old enough to remember. But ten or twenty years ago, it was not unheard of for webmasters to provide one style sheet for screens, and a completely different stylesheet for print, containing page styles tailored for 8.5x11, high-resolution, black-and-white, laser-printed pieces of good-old-fashioned paper.
+
+The media queries spec says, hey, this is a decently common use case -- how about we let you wrap these two sets of styles up into the same stylesheet, like this [click]. Media queries let you wrap your media-specific styles in a little @media block -- no separate stylesheet required.
+
+As luck would have it, the spec authors also decided that, as long as they were letting you query media *types*, why not also let you query device characteristics, like, say, width? [click]
+
+And just like that, the media queries we all know and love -- along with so much of what we now call "responsive design" -- was born.
+</aside>
+
+	<script>
+		var section = document.currentScript.parentNode;
+
+		section.init = ( ( section ) => {
+			section.before = section.querySelector( '.before' );
+			section.after = section.querySelector( '.after' );
+			section.afterafter = section.querySelector( '.afterafter' );
+			section.after.style.display = 'none';
+			section.afterafter.style.display = 'none';
+		} );
+		
+		section.events = [
+			{
+				do: ( section ) => {
+					section.after.style.display = 'block';
+					section.before.style.display = 'none';
+				},
+				undo: ( section ) => {
+					section.after.style.display = 'none';
+					section.before.style.display = 'block';
+				}
+			},
+			{
+				do: ( section ) => {
+					section.after.style.display = 'none';
+					section.afterafter.style.display = 'block';
+				},
+				undo: ( section ) => {
+					section.after.style.display = 'block';
+					section.afterafter.style.display = 'none';
+				}
+			}
+		];
+	</script>
+
 </section>
 
-<section id="4" class="code">
+<section class="center">
+<h1>Modular components</h1>
+<aside class="notes">
+But increasingly, we’re designing modular COMPONENTS, not pages.
+
+Whether you’re working with Web Components, React components, Brad’s Atomic design elements, pattern libraries and style-guide deliverables, or even just the general notion that we should be designing from the content, out, rather than the page’s frame, in – media queries can be a bit of a kludge.
+
+</aside>
+</section>
+
+
+<section id="eq-example" class="code">
 <div style="--height: 4em; height: var(--height); width: 100vw;">
 	<div class="resizable" id="example_1495648141"
 		style="
@@ -187,15 +328,97 @@ And yet! Keying our responsiveness on the state of the entire viewport, rather t
 		</div>
 	</div>
 </div>
-<pre><code class="language-css">
+<pre style="margin-bottom: -1.25em;"><code class="language-css">
 .block {
 	background-color: lightblue; 
 }
-
-.block:media(min-width: 100px) {
+</code></pre>
+<pre class="mediaquery" style="height: 8em;"><code class="language-css">
+@media (min-width: 571px) {
+	.block {
+		background-color: deeppink;
+	}
+}
+</code></pre>
+<pre class="elementquery" style="height: 8em;"><code class="language-css">
+.block:when(min-width: 100px) {
 	background-color: deeppink;
 }
 </code></pre>
+	<script>
+	var section = document.currentScript.parentNode;
+
+	section.init = ( ( section ) => {
+		section.mediaquery = section.querySelector( '.mediaquery' );
+		section.elementquery = section.querySelector( '.elementquery' );
+		section.mediaquery.classList.add( 'hidden' );
+		section.elementquery.classList.add( 'none' );
+		section.container = section.querySelector( '.container' );
+		section.lastDiv = section.container.querySelector('.block:last-child');
+	} );
+	
+	section.events = [
+		{ // show the media query
+			do: ( section ) => {
+				section.mediaquery.classList.remove( 'hidden' );
+			},
+			undo: ( section ) => {
+				section.mediaquery.classList.add( 'hidden' );
+			}
+		},
+		{ // increase the margin
+			do: ( section ) => {
+				section.container.style.margin = 'var(--margin) calc( var(--margin) / 2 )';
+				section.container.style.gridGap = 'calc( var(--margin) / 2 )';
+			},
+			undo: ( section ) => {
+				section.container.style.margin = 'var(--margin)';	
+				section.container.style.gridGap = 'var(--margin)';
+			}
+		},
+		{
+			do: ( section ) => {
+				section.container.removeChild(section.lastDiv);
+			},
+			undo: ( section ) => {
+				section.container.appendChild(section.lastDiv);
+			}
+		},
+		{
+			do: ( section ) => {
+				section.mediaquery.innerHTML = 
+				 section.mediaquery.innerHTML.replace('571px', '430px');
+			},
+			undo: ( section ) => {
+				section.mediaquery.innerHTML = 
+				 section.mediaquery.innerHTML.replace('430px', '571px');
+			}
+		},
+		{
+			do: ( section ) => {
+				section.mediaquery.classList.add('none');
+				section.elementquery.classList.remove('none');
+			},
+			undo: ( section ) => {
+				section.mediaquery.classList.remove('none');
+				section.elementquery.classList.add('none');
+			}
+		}		
+	];
+	</script>
+	<aside class="notes">
+An example’s in order. Let’s say I've got a line of five, light-blue flexible boxes, like this.
+
+And let’s say that when these boxes get to be 100px wide, I want to change them in some way – like, make them pink.
+
+In order to do that right now, I have to a media query. And in order to write a media query, I have have to figure out how wide the entire viewport here is, just as each element hits 100px-wide. And I have to write my media query with that [click]
+
+Now what I’ve done here, that’s kludgy and bad, is bake a bunch of external state into this media query. Remember, all I care about is the width of the box. If it's at least 100px, make it pink. But now I'm in a situation where, if things *around* my boxes change -- let's say I tweak my margins [click], or change the number of boxes [click] -- I’ll have to re-write the media query too. That's bad!
+
+What I really want to be able to do, here, is say exactly what I mean. When these specific *elements* are at least 100px wide, turn them pink. I want to be able to write code like this [click].
+
+That's an element query.
+	</aside>
 </section>
 
 <section id="5">

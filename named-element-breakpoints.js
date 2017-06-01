@@ -18,21 +18,17 @@ document.head.appendChild( sheet );
 let r = new ResizeObserver( entries => {
 
 	for ( let entry of entries ) {
-		
+
 		for ( let i = 0, l = entry.target.breakpoints.length; i < l; i++ ) {
 			
 			if ( entry.contentRect.width >= entry.target.breakpoints[ i ] )  {
-
 				entry.target.classList.add( entry.target.classNames[ i ] );
-
 			} else {
-
 				entry.target.classList.remove( entry.target.classNames[ i ] );
-
 			}
 		
 		}
-	
+
 	}
 
 } );

@@ -9,7 +9,7 @@ html, body { height: 100vh; padding: 0.5em; padding-bottom: 2em;}
 
 
 div {
-	--x: 2px;
+	--x: 0.5px;
 	height: calc( 100% - ( var(--x) * 2 ) );
 	padding: var(--x);
 	margin: var(--x);
@@ -17,7 +17,7 @@ div {
 	display: grid;
 	/* golden ratio */
 	grid-template-columns: 14.5897961fr 23.60680163fr 61.80340226fr;
-/* 	--named-breakpoints: 2px medium 37px large; */
+	--named-breakpoints: 2px medium 37px large;
 }
 
 #root {
@@ -54,7 +54,7 @@ nest( root, 1 );
 
 </script>
 
-
+<!--
 <script>
 
 var divs = document.querySelectorAll('div');
@@ -75,7 +75,7 @@ let resize = ( () => {
 window.addEventListener( 'resize', resize );
 resize();
 </script>
-
+-->
 
 <!-- conclusions
 

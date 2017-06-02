@@ -213,14 +213,17 @@ How many of are old enough to have written a print-specific stylesheet?
 
 <pre class="before" style="height: 8em;"><code class="language-html">
 &lt;link rel="stylesheet" type="text/css" 
-  media="screen" href="screen.css"&gt;
+	media="print" href="serif.css"&gt;
 &lt;link rel="stylesheet" type="text/css" 
-  media="print" href="print.css"&gt;
+	media="screen" href="sans-serif.css"&gt;
 </code></pre>
 
 <pre class="after" style="height: 8em;"><code class="language-css">
 @media print {
-  * { font-family: serif }
+	* { font-family: serif }
+}
+@media screen {
+	* { font-family: sans-serif }
 }
 </code></pre>
 
@@ -230,14 +233,14 @@ How many of are old enough to have written a print-specific stylesheet?
 }
 </code></pre>
 
-<footer><p>Example from <a href="https://www.w3.org/TR/2002/CR-css3-mediaqueries-20020708/">the original Media Queries specification</a>, published in 2002.</p></footer>
+<footer><p>Example from <a href="https://www.w3.org/TR/2001/WD-css3-mediaqueries-20010404/">the original Media Queries specification</a>, published in 2001.</p></footer>
 
 <aside class="notes">
-Well the original media queries spec, published fifteen years ago next month, opens with the following example. This is something that I’m just barely old enough to remember. But ten or twenty years ago, it was not unheard of for webmasters to provide one style sheet for screens, and a completely different stylesheet for print, containing page styles tailored for 8.5x11, high-resolution, black-and-white, laser-printed pieces of good-old-fashioned paper.
+Well the original media queries spec, piblished sixteen years ago, opens with the following example. This is something that I’m just barely old enough to remember. But ten or twenty years ago, it was not unheard of for webmasters to provide one style sheet for screens, and a completely different stylesheet for print, containing page styles tailored for 8.5x11, high-resolution, black-and-white, laser-printed pieces of good-old-fashioned paper.
 
 The media queries spec says, hey, this is a decently common use case -- how about we let you wrap these two sets of styles up into the same stylesheet, like this [click]. Media queries let you wrap your media-specific styles in a little @media block -- no separate stylesheet required.
 
-As luck would have it, the spec authors also decided that, as long as they were letting you query media *types*, why not also let you query device characteristics, like, say, width? [click]
+As luck would have it, the spec authors also decided that, as long as they were letting you query media *types*, why not also let you query specific media *features*, say, width? [click]
 
 And just like that, the media queries we all know and love -- along with so much of what we now call "responsive design" -- was born.
 </aside>
@@ -280,41 +283,41 @@ And just like that, the media queries we all know and love -- along with so much
 </section>
 
 <section class="center">
-<h1>Modular components</h1>
-<aside class="notes">
-But increasingly, we’re designing modular COMPONENTS, not pages.
 
-Whether you’re working with Web Components, React components, Brad’s Atomic design elements, pattern libraries and style-guide deliverables, or even just the general notion that we should be designing from the content, out, rather than the page’s frame, in – media queries can be a bit of a kludge.
+<!--TODO-->
+<img alt="scaling page with big word that changes from small to big" />
+<!--change to-->
+<img alt="scaling page full of individual components that all have their own small/big changes at different points" />
+<h1><del>Responsive pages</del><ins>Modular components</ins></h1>
+
+<aside class="notes">
+And, when we we’re designing web pages, and we want to adapt those pages in response to facts about the whole viewport, they’re a great solution.
+
+But increasingly, we’re not really designing monolithic *pages*. We’re designing modular *components*. And what we want, is the ability to set breakpoints directly on those components.
+
+Whether you’re working with Web Components, React components, <a href="http://atomicdesign.bradfrost.com/chapter-2/">Brad’s Atomic Design elements</a>, <a href="https://smacss.com/book/type-module">SMACSS modules</a> or Object-OrientedCSS objects or BEM blocks, <a href="http://styleguides.io/">style-guides and pattern libraries</a>, or even just <a href="https://adactio.com/journal/4523">the high-level notion that we should be designing from our content, out, rather than the page’s frame, in</a> – media queries are a kludge and, in the words of Ian Storm Taylor, <a href="https://ianstormtaylor.com/media-queries-are-a-hack/">a hack</a>.
 
 </aside>
 </section>
 
 
 <section id="eq-example" class="code">
-<div style="--height: 4em; height: var(--height); width: 100vw;">
-	<div class="resizable" id="example_1495648141"
-		style="
-			height: 100%;
-			width: var(--height);
-			max-width: 100%; /* dosent do anything argh */
-			background-color: white;
-		"
-	>
+<div class="example-container">
+	<div class="resizable example-viewport" id="example_1495648141">
 		<style>
 			#example_1495648141 .container {
 				display: grid;
-				--margin: 0.25rem;
 				grid-template-columns: repeat(auto-fit, minmax(1px, 1fr));
 				grid-gap: var(--margin);
 				margin: var(--margin);
 			}
 			#example_1495648141 .block {
-				--named-breakpoints: 100px make-it-blue;
+				--named-breakpoints: 2.25em make-it-pink;
 				height: calc( var(--height) - var(--margin) * 2 );
 				background-color: lightblue;
 
 			}
-			#example_1495648141 .block.make-it-blue {
+			#example_1495648141 .block.make-it-pink {
 				background-color: deeppink;
 			}
 
@@ -334,7 +337,7 @@ Whether you’re working with Web Components, React components, Brad’s Atomic 
 }
 </code></pre>
 <pre class="mediaquery" style="height: 8em;"><code class="language-css">
-@media (min-width: 571px) {
+@media (min-width: 797px) {
 	.block {
 		background-color: deeppink;
 	}
@@ -368,8 +371,8 @@ Whether you’re working with Web Components, React components, Brad’s Atomic 
 		},
 		{ // increase the margin
 			do: ( section ) => {
-				section.container.style.margin = 'var(--margin) calc( var(--margin) / 2 )';
-				section.container.style.gridGap = 'calc( var(--margin) / 2 )';
+				section.container.style.margin = 'var(--margin) calc( var(--margin) / 4 )';
+				section.container.style.gridGap = 'calc( var(--margin) / 4 )';
 			},
 			undo: ( section ) => {
 				section.container.style.margin = 'var(--margin)';	
@@ -387,11 +390,11 @@ Whether you’re working with Web Components, React components, Brad’s Atomic 
 		{
 			do: ( section ) => {
 				section.mediaquery.innerHTML = 
-				 section.mediaquery.innerHTML.replace('571px', '430px');
+				 section.mediaquery.innerHTML.replace('797px', '582px');
 			},
 			undo: ( section ) => {
 				section.mediaquery.innerHTML = 
-				 section.mediaquery.innerHTML.replace('430px', '571px');
+				 section.mediaquery.innerHTML.replace('582px', '797px');
 			}
 		},
 		{
@@ -407,24 +410,26 @@ Whether you’re working with Web Components, React components, Brad’s Atomic 
 	];
 	</script>
 	<aside class="notes">
-An example’s in order. Let’s say I've got a line of five, light-blue flexible boxes, like this.
+An example’s in order. Let’s say I've got a line of five little light-blue flexible components, like this.
 
-And let’s say that when these boxes get to be 100px wide, I want to change them in some way – like, make them pink.
+And let’s say that when these boxes get to be 100px wide, I want to change them in some way – lets say I want to make them pink.
 
-In order to do that right now, I have to a media query. And in order to write a media query, I have have to figure out how wide the entire viewport here is, just as each element hits 100px-wide. And I have to write my media query with that [click]
+So, I'll write a media query. I'll figure out how wide the entire viewport is, just as each element hits 100px-wide. And use that whole viewport width as my min-width, like this [click]
 
-Now what I’ve done here, that’s kludgy and bad, is bake a bunch of external state into this media query. Remember, all I care about is the width of the box. If it's at least 100px, make it pink. But now I'm in a situation where, if things *around* my boxes change -- let's say I tweak my margins [click], or change the number of boxes [click] -- I’ll have to re-write the media query too. That's bad!
+Now what I’ve done here, that’s kludgy and bad, is bake a bunch of external state into what should just be a statement about the boxes. Remember, all I care about is the width the boxes. If they’re at least 100px wide, make them pink. But now I'm in a situation where, if many things *around* the boxes change -- let's say I tweak my margins [click], or change the number of boxes [click] -- The media query no longer does what I want, and I’ll have to change it. [click] That's bad!
 
-What I really want to be able to do, here, is say exactly what I mean. When these specific *elements* are at least 100px wide, turn them pink. I want to be able to write code like this [click].
+What I really want to be able to say, here, is say exactly what I mean. When these specific *elements* are at least 100px wide, turn them pink. Like this [click].
 
 That's an element query.
 	</aside>
 </section>
 
-<section id="5">
+<!--
+<section>
 <h1 class="center">Pretty neat!</h1>
 <p>Now show me something useful?</p>
 </section>
+
 
 <section id="5">
 <h1>Other use cases</h1>
@@ -450,26 +455,40 @@ Any time you're design from the content, out, rather than from page dimension an
 - dont want to have to re-write those breakpoints later, because some other part of the page changed
 </aside>
 </section>
+-->
 
-<section class="title">
+
+<section id="tweets" class="title">
 <h1>People have been asking</h1>
 <p>for element queries</p>
 <aside class="notes">
+And hoo boy, have people been asking for them.
+</aside>
+</section>
 
+<section class="center">
+<figure>
+<img src="images/ResponsiveContainersScrenshot.png" alt="A screenshot of http://blog.andyhume.net/responsive-containers/"  style="max-height: 65vh;" />
+<figcaption>
+<p><cite><a href="http://blog.andyhume.net/responsive-containers/">Responsive Containers</a></cite> by Andy Hume</p>
+</figcaption>
+</figure>
+<aside class="notes">
+Here’s the first mention I that could find of the general concept – an clear, concise, and six-year-old blog post from Andy Hume, complete with a working, javascript-based implementation and demo of the idea. Andy called them “Selector Queries”. 
 </aside>
 </section>
 
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">We need native CSS media queries at the element/component/widget level, not just the viewport. Make it so, internetz.</p>&mdash; Nicolas (@necolas) <a href="https://twitter.com/necolas/status/299573744307941376">February 7, 2013</a></blockquote>
 <aside class="notes">
-Here’s the first mention I that could find of the general concept of “media queries for elements,” tweeted by twitter engineer Nicolas Gallagher all the way back in 2013.
+Turns out, they were a good idea...
 </aside>
 </section>
 
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Great read about the #1 missing tool for responsive design: Element queries  <a href="http://t.co/EARts4HWWr">http://t.co/EARts4HWWr</a> (viewport queries are still valuable)</p>&mdash; Brad Frost 🇺🇸 (@brad_frost) <a href="https://twitter.com/brad_frost/status/319929504422322176">April 4, 2013</a></blockquote>
 <aside class="notes">
-Within months, some of the smartest minds in the indsutry were calling element queries the #1 missing tool for responsive design.
+...it wasn’t too long before some of the smartest minds in the industry were calling element-level queries “the number one missing tool for responsive design.”
 </aside>
 </section>
 
@@ -477,11 +496,11 @@ Within months, some of the smartest minds in the indsutry were calling element q
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Ahh, Spring—when a young man’s fancy turns to thoughts of element queries, what that syntax might look like, and how one might prototype it.</p>&mdash; Mat Marquis (@wilto) <a href="https://twitter.com/wilto/status/466673241130430464">May 14, 2014</a></blockquote>
 <aside class="notes">
-And within a year, serious efforts were underway to turn what had been an exciting idea into an empowering reality.
+By 2014, serious efforts were underway to turn what had been just an exciting idea into an empowering reality.
 
 But. There were problems. More on those later.
 
-For now, I want to kind of track developer sentiment about element queries over the years, via a series of increasingly sad and desparate tweets.
+For now, I just want to take you on a journey of increasingly sad and desparate tweets.
 </aside>
 </section>
 
@@ -512,7 +531,7 @@ Front end developers began do wonder... is anyone listening?
 </section>
 
 <section>
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Serious question: where are element queries at? Any updates since the last “they cause a loop so we have to figure out how to do this” one?</p>&mdash; Sara Soueidan 🐦 (@SaraSoueidan) <a href="https://twitter.com/SaraSoueidan/status/807982469714706434">December 11, 2016</a></blockquote>
+<!--<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Serious question: where are element queries at? Any updates since the last “they cause a loop so we have to figure out how to do this” one?</p>&mdash; Sara Soueidan 🐦 (@SaraSoueidan) <a href="https://twitter.com/SaraSoueidan/status/807982469714706434">December 11, 2016</a></blockquote>-->
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">All I want in 2017 on the Web is Container Queries. Seriously.</p>&mdash; Sara Soueidan 🐦 (@SaraSoueidan) <a href="https://twitter.com/SaraSoueidan/status/812333338744721408">December 23, 2016</a></blockquote>
 <aside class="notes">
@@ -531,83 +550,232 @@ Doesn’t anybody understand what a big deal element queries would be?
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I wonder when and if we’ll ever get Container Queries in CSS. It’s only possibly the most useful RWD technique. The wait is depressing.</p>&mdash; Sara Soueidan 🐦 (@SaraSoueidan) <a href="https://twitter.com/SaraSoueidan/status/744117584941875200">June 18, 2016</a></blockquote>
 <aside class="notes">
-Evidently, they don't.
+Evidently, they don't. Diffrent developers have responded to this differently. Sadness is a common reaction.
 </aside>
 </section>
 
+<!--
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">That time of day when you run into a CSS layout that’s going to be a total hack job to build without element/container queries.</p>&mdash; Scott Jehl (@scottjehl) <a href="https://twitter.com/scottjehl/status/723575660065726465">April 22, 2016</a></blockquote>
 <aside class="notes">
 A certain fatalism began to creep into the conversation.
 </aside>
 </section>
+-->
 
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">are container queries here yet<br><br>dot tumblr dot corn</p>&mdash; Ethan Marcotte (@beep) <a href="https://twitter.com/beep/status/723156713373732865">April 21, 2016</a></blockquote>
 <aside class="notes">
-Dry humor.
+Others have resorted to dry humor.
 </aside>
 </section>
+
+<section>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">FUTURE BROWSER v154.2 release notes<br>* JS engine optimizations—technically now a time machine<br>* nothing on container queries yet—stop asking</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/748241672757084160">June 29, 2016</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The fact that we’ll probably get stable, cross browser WebVR before container queries is a good example of what’s wrong with our industry.</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/790926735156011008">October 25, 2016</a></blockquote>
+<aside class="notes">
+Bitterness (you know, sometimes the saddest tweets are the truest tweets...)
+</aside>
+</section>
+
 
 <section>
 <div  style="zoom: 0.75;">
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Well, I tried. <a href="https://t.co/mCfx2Tor0O">pic.twitter.com/mCfx2Tor0O</a></p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/743219273275826176">June 15, 2016</a></blockquote>
 </div>
 <aside class="notes">
-Desperate cries for help
+And desperate cries for help
 </aside>
 </section>
 
-<section>
-<!--
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">conspiracy theories<br>conspiracy queries<br>container queries<a href="https://twitter.com/hashtag/emghazi?src=hash">#emghazi</a></p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/748624323955482624">June 30, 2016</a></blockquote>
--->
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">FUTURE BROWSER v154.2 release notes<br>* JS engine optimizations—technically now a time machine<br>* nothing on container queries yet—stop asking</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/748241672757084160">June 29, 2016</a></blockquote>
-<aside class="notes">
-Hopelessness
-</aside>
-</section>
 
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="und" dir="ltr">I want my <br>element <br>element<br>element<br>I want my element<br>element<br>element<br>element<br>Chilis element queries, Chilis element queries<br>barbecue sauce</p>&mdash; Brad Frost 🇺🇸 (@brad_frost) <a href="https://twitter.com/brad_frost/status/765926034604695552">August 17, 2016</a></blockquote>
 <aside class="notes">
-And for some, sadly, madness.
+Some, sadly, have been driven to madness.
 </aside>
 </section>
 
-
-
-<!--
 <section>
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">👏 Everything 👏 I 👏 build 👏 needs 👏 element 👏 queries 👏</p>&mdash; OUTNMBRD (@marcamos) <a href="https://twitter.com/marcamos/status/791092232317177856">October 26, 2016</a></blockquote>
-</section>
--->
-
-<section>
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">The fact that we’ll probably get stable, cross browser WebVR before container queries is a good example of what’s wrong with our industry.</p>&mdash; Zach Leatherman (@zachleat) <a href="https://twitter.com/zachleat/status/790926735156011008">October 25, 2016</a></blockquote>
+<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">Be our witness? <a href="https://twitter.com/chriscoyier">@chriscoyier</a> and I just bet $20 that element queries would get implemented. I said no, he said yes. :)</p>&mdash; Nicole Sullivan (@stubbornella) <a href="https://twitter.com/stubbornella/status/611925043950538753">June 19, 2015</a></blockquote></script>
 <aside class="notes">
-Throughout all of this, personally, I’ve found that the truest tweets have been the saddest of all
+My favorite response might be Nicole Sullivan's. Nicole thought, well, if I can't have element queries, at least I can have $20!
 </aside>
 </section>
-
-<!--
-<section>
-<blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">I&#39;d give my little finger for well-supported element queries right now.</p>&mdash; Bro(ton)grammer (@joshbroton) <a href="https://twitter.com/joshbroton/status/839157248693792771">March 7, 2017</a></blockquote>
-</section>
--->
 
 <section>
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/grigs">@grigs</a> DO CONTAINER QUERIES NEXT <a href="https://t.co/fVT8NXGnqQ">pic.twitter.com/fVT8NXGnqQ</a></p>&mdash; Ethan Marcotte (@beep) <a href="https://twitter.com/beep/status/862791570826960896">May 11, 2017</a></blockquote>
 <aside class="notes">
-But for those who, in 2017, still nurture hope, the message is loud and clear
+For those who, in 2017, still nurture hope, the message is loud and clear
 </aside>
 </section>
 
-<section class="title">
+<section id="notyet" class="title">
 <h1>What’s the hold up?</h1>
 <aside class="notes">
-Before we can talk about that, need to talk about how browsers work.
 </aside>
+</section>
+
+<section>
+	<p class="bigemoji center">🔁</p>
+	<p>Problem #1:</p>
+	<h1>Circularity</h1>
+</section>
+
+<section class="code" id="circular-example">
+
+<div class="example-container">
+	<div class="resizable example-viewport" id="example_1496355733">
+		<style>
+			#example_1496355733 .block {
+				margin: var(--margin);
+				--named-breakpoints: 10em make-it-pink;
+				height: calc( var(--height) - var(--margin) * 2 );
+				width: calc( 100% - var(--margin) * 2 );
+				background-color: lightblue;
+			}
+			#example_1496355733 .block.make-it-pink {
+				width: 5em;
+			}
+
+		</style>
+		<div class="block"></div>
+	</div>
+</div>
+<pre><code class="language-css">
+.block:when(width > 10em) {
+	width: 5em;
+}
+</pre></code>
+</section>
+
+<section class="code" id="one-way-adaptation-example">
+
+<div class="example-container">
+	<div class="resizable example-viewport" id="example_1496382980">
+		<style>
+			#example_1496382980 .container {
+				margin: 0 calc(var(--margin) / 2);
+				display: flex;
+			}
+			#example_1496382980 .block {
+				margin: var(--margin) calc(var(--margin) / 2);
+				--named-breakpoints: 3em make-it-pink;
+				height: calc( var(--height) - var(--margin) * 2 );
+				width: calc( 100% - var(--margin) * 2 );
+				background-color: lightblue;
+			}
+			#example_1496382980 .block.make-it-pink {
+				border: 0.25em solid deeppink;
+			}
+
+		</style>
+		<div class="container">
+			<div class="block"></div>
+			<div class="block"></div>
+			<div class="block"></div>
+		</div>
+	</div>
+</div>
+<pre><code class="language-css">
+.container {
+	display: flex;
+}
+
+.block:when(width > 3em) {
+	border: 0.25em solid deeppink;
+}
+</pre></code>
+</section>
+
+
+
+<section class="code" id="one-way-adaptation-example">
+
+<div class="example-container">
+	<div class="resizable example-viewport" id="example_1496381020"
+	     style="width: 7.87em;">
+		<style>
+			#example_1496381020 .container {
+				margin: 0 calc(var(--margin) / 2);
+				display: flex;
+			}
+			#example_1496381020 .block {
+				margin: var(--margin) calc(var(--margin) / 2);
+				--named-breakpoints: 3.25em make-it-pink;
+				height: calc( var(--height) - var(--margin) * 2 );
+				width: calc( 100% - var(--margin) * 2 );
+				background-color: lightblue;
+				padding: 0.125em;
+				font-family: 'SooperSerifThinCondensed';
+				font-size: 0.75em;
+			}
+			#example_1496381020 .block.make-it-pink {
+				letter-spacing: 0.1em;
+			}
+
+		</style>
+		<div class="container">
+			<div class="block">Super</div>
+			<div class="block">califragilistic</div>
+			<div class="block">expiali</div>
+			<div class="block">docious</div>
+		</div>
+	</div>
+</div>
+<pre><code class="language-css">
+.container {
+	display: flex;
+}
+
+.block:when(width > 3.25em) {
+	letter-spacing: 0.1em;
+}
+</pre></code>
+</section>
+
+
+<section class="code" id="circular-container-example">
+
+<div class="example-container">
+	<div class="resizable example-viewport" id="example_1496356616">
+		<style>
+			#example_1496356616 .container {
+				--named-breakpoints: 10em make-it-pink;
+				margin: var(--margin);
+				border: 0.125em solid deeppink;
+			}
+			#example_1496356616 .block {
+				height: calc( var(--height) - var(--margin) * 2 - 0.25em );
+				width: calc( 100% - var(--margin) * 2 );
+				background-color: lightblue;
+			}
+			#example_1496356616 .block.make-it-pink {
+				width: 7.5em;
+			}
+
+		</style>
+		<div class="container">
+			<div class="block"></div>
+		</div>
+	</div>
+</div>
+
+
+</section>
+
+<section>
+<h1>Solutions?</h1>
+<ul>
+<li>:hover</li>
+<li>container queries!</li>
+<li>contain-strict</li>
+</section>
+
+<section>
+	<p class="bigemoji center">🏚</p>
+	<p>Problem #2:</p>
+	<h1>Breaks architectural assumptions</h1>
 </section>
 
 <section>
@@ -620,12 +788,20 @@ CSS → CSSOM
 </aside>
 </section>
 
+
+<section>
+	<p class="bigemoji center">🐌</p>
+	<p>Problem #3:</p>
+	<h1>Fundamentally slow</h1>
+</section>
+
+
 <section>
 <h1>Layout depending on layout</h1>
 <p>Three problems</p>
 <div style="font-size: 0.4em; font-family: sans-serif !important;">
 <ol>
-	<li>Potential for Circularity
+	<li>🔁 Potential for Circularity 
 		<ol>
 			<li>As millions of Microsoft Excel know, cicular references are bad and confusing [screenshot]</li>
 			<li>Fun demo!
@@ -649,7 +825,7 @@ CSS → CSSOM
 			</li>
 		</ol>
 	</li>
-	<li>Breaks a fundamental assumption of browser layout engines
+	<li>🏚 Breaks browser layout engine architecture
 		<ol>
 			<li>1-pass layout.</li>
 			<li>Again, layout is really complicated</li>
@@ -657,7 +833,7 @@ CSS → CSSOM
 			<li>Not impossible, but a whole, whole lot of work</li>
 		</ol>
 	</li>
-	<li>Fundamentally slow
+	<li>🐌 Fundamentally slow
 		<ol>
 			<li>Despite being so complicated, layout needs to happen FAST</li>
 			<li>You can re-architect layout engines to make two-pass layout possible, but it’s always going to be slower, and opens the door for extreme slowness. 
@@ -674,7 +850,7 @@ CSS → CSSOM
 			<li>We’ve made this mistake before: microsoft’s mistake</li>
 			<li>Solution: Asynchronous
 				<ol>
-					<li>What is a synchronus</li>
+					<li>What is a synchronous</li>
 					<li>ResizeObserver</li>
 				</ol>
 			</li>
@@ -683,11 +859,28 @@ CSS → CSSOM
 </ol>
 </div>
 <aside class="notes">
-Before we can talk about that, need to talk about how browsers work.
 </aside>
 </section>
 
+
 <section>
+<h1>Houdini & prollyfills</h1>
+<p>cq-prollyfill, eqcss</p>
+</section>
+
+<section>
+<h1>Syntax!</h1>
+<ul>
+	<li>hacks...
+	<li>Pseudo-selector
+	<li>@ rules?
+	<li>generalized conditionals for css
+</ul>
+</section>
+
+<section>
+<h1>Speculative polyfills</h1>
+<p>cq-prollyfill, eqcss</p>
 </section>
 
 <section class="title">
@@ -705,10 +898,7 @@ Before we can talk about that, need to talk about how browsers work.
 <p>source: dave rupert gist</p>
 </section>
 
-<section>
-<h1>Speculative polyfills</h1>
-<p>cq-prollyfill, eqcss</p>
-</section>
+
 
 <section>
 <h1>What can you do?</h1>

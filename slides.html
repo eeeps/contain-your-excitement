@@ -139,14 +139,6 @@ but enough about me
 			top: -0.125em;
 			margin-top: -2px;
 			font-size: 1.33em;
-			text-transform: uppercase;
-			padding: 0.25em;
-			padding-bottom: 0.05em;
-			rotate: -7deg;
-			background-color: var(--light-bg);
-			box-shadow: var(--box-shadow);
-			font-family: SooperSansThick;
-			border-radius: 0.1em;
 		">
 			Container?
 		</p>
@@ -734,48 +726,173 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 </pre></code>
 </section>
 
+<section class="center">
+	<h1>Element Queries</h1>
+	<div class="layer">
+		<p class="sticker" style="
+			position: relative;
+			left: -2.5rem;
+			top: -0.125em;
+			margin-top: -2px;
+			background-color: var(--dark-bg);
+		">
+			Container!
+		</p>
+	</div>
+	<script>
+		var section = document.currentScript.parentNode;
+		
+		section.init = ( ( section ) => {
+			section.stickerLayer = section.querySelector( '.layer' );
+			section.stickerLayer.classList.add('hidden');
+		} );
+		
+		section.events = [
+			{
+				do: ( section ) => {
+					section.stickerLayer.classList.remove('hidden');
+				},
+				undo: ( section ) => {
+					section.stickerLayer.classList.add('hidden');
+				}
+			}
+		];
+	</script>
+</section>
+
 
 <section class="code" id="circular-container-example">
 
 <div class="example-container">
 	<div class="resizable example-viewport" id="example_1496356616">
 		<style>
-			#example_1496356616 .container {
+			#example_1496356616 .wrapper {
 				--named-breakpoints: 10em make-it-pink;
 				margin: var(--margin);
-				border: 0.125em solid deeppink;
+				border: 0.0625em solid deeppink;
 			}
 			#example_1496356616 .block {
-				height: calc( var(--height) - var(--margin) * 2 - 0.25em );
-				width: calc( 100% - var(--margin) * 2 );
+				height: calc( var(--height) - var(--margin) * 2 - 0.125em );
 				background-color: lightblue;
 			}
-			#example_1496356616 .block.make-it-pink {
-				width: 7.5em;
+			#example_1496356616 .wrapper.make-it-pink > .block {
+				width: 5em !important;
 			}
 
 		</style>
-		<div class="container">
+		<div class="wrapper">
 			<div class="block"></div>
 		</div>
 	</div>
 </div>
+<pre><code class="language-css">
+.wrapper {
+	border: 0.0625em solid deeppink;
+}
 
+.block:container(width > 10em) {
+	width: 5em;
+}
+</code></pre>
+
+<div class="poo layer">
+<img style="width:7.5em;" src="images/pile-of-poo.png" alt />
+</div>
+
+<script>
+	var section = document.currentScript.parentNode;
+
+	section.init = ( ( section ) => {
+		section.codeEl = section.querySelector("code.language-css");
+		section.wrapper = section.querySelector(".wrapper");
+		section.block = section.querySelector(".block");
+		section.poo = section.querySelector(".poo");
+		section.poo.classList.add('hidden');
+		section.codeElContents = [
+			section.codeEl.textContent,
+			".wrapper {\n\
+	border: 0.0625em solid deeppink;\n\
+	float: left;\n\
+}\n\
+\n\
+.block:container(width > 10em) {\n\
+	width: 5em;\n\
+}",
+			".wrapper {\n\
+	border: 0.0625em solid deeppink;\n\
+	float: left;\n\
+}\n\
+\n\
+.block {\n\
+	width: 11em;\n\
+}\n\
+\n\
+.block:container(width > 10em) {\n\
+	width: 5em;\n\
+}"
+		];
+	} );
+	
+	section.events = [
+		{
+			do: ( section ) => {
+				section.codeEl.innerHTML = Prism.highlight(section.codeElContents[ 1 ], Prism.languages.css);
+				section.wrapper.style.float = 'left';
+				
+			},
+			undo: ( section ) => {
+				section.codeEl.innerHTML = Prism.highlight(section.codeElContents[ 0 ], Prism.languages.css);
+				section.wrapper.style.float = 'none';
+			}
+		},
+		{
+			do: ( section ) => {
+				section.codeEl.innerHTML = Prism.highlight(section.codeElContents[ 2 ], Prism.languages.css);
+				section.block.style.width = "11em";
+			},
+			undo: ( section ) => {
+				section.codeEl.innerHTML = Prism.highlight(section.codeElContents[ 1 ], Prism.languages.css);
+				section.block.style.width = "100%";
+			}
+		},
+		{
+			do: ( section ) => {
+				section.poo.classList.remove( 'hidden' );
+			},
+			undo: ( section ) => {
+				section.poo.classList.add( 'hidden' );
+			}
+		}
+	];
+</script>
 
 </section>
 
 <section>
-<h1>Solutions?</h1>
-<ul>
-<li>:hover</li>
-<li>container queries!</li>
-<li>contain-strict</li>
+<h1>Two solutions...</h1>
+</section>
+
+<section>
+<h1><span style="font-family: SooperSerifThinCondensed2x;">(closest)</span> Container <span style="font-family: SooperSerifThinCondensed2x;">(whose width is not influenced by its children)</span> Queries</h1>
+</section>
+
+<section>
+<img src="images/cq-prolyfill.png" alt="screenshot of Martin Auswoger’s blog post about container query solutions" style="height: 60vh; margin: -0.5em auto 0.5em auto;" />
+<p>Conceived of + implemented by Martin Auswoger</p>
+<footer>
+<p><a href="https://github.com/ausi/cq-prolyfill">https://github.com/ausi/cq-prolyfill</a> + <a href="https://au.si/css-container-element-queries">https://au.si/css-container-element-queries</a></p></footer>
+</section>
+
+<section>
+<img src="images/css-containment.png" style="height: 60vh;" alt="screenshot of the CSS Containment Module Level 1 draft" />
+<h1><code class="language-css" style="font-size: 1rem; box-shadow: var(--box-shadow);">contain: strict;</code></h1>
+<footer><p><a href="https://drafts.csswg.org/css-contain/">https://drafts.csswg.org/css-contain/</a></p></footer>
 </section>
 
 <section>
 	<p class="bigemoji center">🏚</p>
 	<p>Problem #2:</p>
-	<h1>Breaks architectural assumptions</h1>
+	<h1>Breaks layout engine architecture</h1>
 </section>
 
 <section>

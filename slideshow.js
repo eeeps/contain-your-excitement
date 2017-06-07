@@ -13,7 +13,7 @@ const intersectionObserver = new IntersectionObserver( entries =>
 		} )[ 0 ].target;
 		
 		// show the presenter’s notes
-		if ( /* false && */ currentSlide.querySelector('.notes') !== null ) {
+		if (  false &&  currentSlide.querySelector('.notes') !== null ) {
 			console.clear();
 			console.log(currentSlide.querySelector('.notes').innerHTML);
 		}

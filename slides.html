@@ -2,6 +2,7 @@
 <html lang="en">
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="fonts.css" />
 <link rel="stylesheet" href="style.css" />
 <script defer src="slideshow.js"></script>
 <script defer src="named-element-breakpoints.js"></script>
@@ -133,7 +134,7 @@ but enough about me
 <section id="2" class="title">
 	<h1>Element queries!</h1>
 	<div class="layer">
-		<p style="
+		<p class="sticker" style="
 			position: relative;
 			left: -3.33rem;
 			top: -0.125em;
@@ -203,27 +204,29 @@ How many of are old enough to have written a print-specific stylesheet?
 
 <section id="3" class="code">
 
-<pre class="before" style="height: 8em;"><code class="language-html">
-&lt;link rel="stylesheet" type="text/css" 
-	media="print" href="serif.css"&gt;
-&lt;link rel="stylesheet" type="text/css" 
-	media="screen" href="sans-serif.css"&gt;
-</code></pre>
+<div style="height: 4rem;">
+	<pre class="before"><code class="language-html">
+	&lt;link rel="stylesheet" type="text/css" 
+		media="print" href="serif.css"&gt;
+	&lt;link rel="stylesheet" type="text/css" 
+		media="screen" href="sans-serif.css"&gt;
+	</code></pre>
 
-<pre class="after" style="height: 8em;"><code class="language-css">
-@media print {
-	* { font-family: serif }
-}
-@media screen {
-	* { font-family: sans-serif }
-}
-</code></pre>
+	<pre class="after"><code class="language-css">
+	@media print {
+		* { font-family: serif }
+	}
+	@media screen {
+		* { font-family: sans-serif }
+	}
+	</code></pre>
 
-<pre class="afterafter" style="height: 8em;"><code class="language-css">
-@media screen and (min-width: 400px) {
-	...
-}
-</code></pre>
+	<pre class="afterafter"><code class="language-css">
+	@media screen and (min-width: 400px) {
+		...
+	}
+	</code></pre>
+</div>
 
 <footer><p>Example from <a href="https://www.w3.org/TR/2001/WD-css3-mediaqueries-20010404/">the original Media Queries specification</a>, published in 2001.</p></footer>
 
@@ -609,6 +612,156 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 </section>
 
 <section>
+<p>Please excuse a wildly simplified explanation of</p>
+<h1>How Browsers Work</h1>
+<aside class="notes">
+</aside>
+</section>
+
+<section id="how-browsers-work">
+	<object type="image/svg+xml" data="images/how-browsers-work.svg" style="grid-column: 1 / 4; width: 100vw; height: 100vh;" onload="
+		let s = this.parentElement;
+		s.svg = this.getSVGDocument();
+		s.html = s.svg.getElementById('HTML'),
+		s.css = s.svg.getElementById('CSS'),
+		[
+			s.dom = s.svg.getElementById('DOM'),
+			s.cssom = s.svg.getElementById('CSSOM'),
+			s.renderTree = s.svg.getElementById('Render-Tree'),
+			s.boxTree = s.svg.getElementById('Box-Tree'),
+			s.pixelsOnScreen = s.svg.getElementById('Pixels-on-screen'),
+			// s.loadAndParse = s.svg.getElementById('Load-and-Parse'),
+			s.loadAndParseTopArrow = s.svg.getElementById('Load-and-Parse-top-arrow'),
+			s.loadAndParseBottomArrow = s.svg.getElementById('Load-and-Parse-bottom-arrow'),
+			s.loadAndParseText = s.svg.getElementById('Load-and-Parse-text'),
+			s.runSelectors = s.svg.getElementById('Run-Selectors'),
+			s.layout = s.svg.getElementById('Layout'),
+			s.paint = s.svg.getElementById('Paint'),
+			s.elementQueries = s.svg.getElementById('ELEMENT-QUERIES')
+		].forEach( ( element ) => {
+			element.classList.add('none');
+		} );
+	">
+	 A big ol' diagram
+	</object>
+	<aside class="notes">
+	</aside>
+	<script>
+		var section = document.currentScript.parentNode;
+		
+// 		section.init = ( ( section ) => {
+// 			section.object = section.querySelector('object');
+// 			section.svg.addEventListener( 'load', () => {
+// 				section.svg = section.querySelector('object').getSVGDocument();
+// 			} );
+// 			// section.html = section.svg.getElementById('HTML');
+// 			// section.html.setAttribute('visibility', 'hidden');
+// 		} );
+		
+		section.events = [
+			{
+				do: ( section ) => {
+					section.loadAndParseText.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.loadAndParseText.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.loadAndParseTopArrow.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.loadAndParseTopArrow.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.dom.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.dom.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.loadAndParseBottomArrow.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.loadAndParseBottomArrow.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.cssom.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.cssom.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.runSelectors.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.runSelectors.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.renderTree.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.renderTree.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.layout.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.layout.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.boxTree.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.boxTree.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.paint.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.paint.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.pixelsOnScreen.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.pixelsOnScreen.classList.add('none');
+				}
+			},
+			{
+				do: ( section ) => {
+					section.elementQueries.classList.remove('none');
+				},
+				undo: ( section ) => {
+					section.elementQueries.classList.add('none');
+				}
+			}
+		];
+	</script>
+</section>
+
+
+
+<section>
 	<p class="bigemoji center">🔁</p>
 	<p>Problem #1:</p>
 	<h1>Circularity</h1>
@@ -893,16 +1046,119 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 	<p class="bigemoji center">🏚</p>
 	<p>Problem #2:</p>
 	<h1>Breaks layout engine architecture</h1>
+	<aside class="notes">
+	Remember our diagram from earlier? For twenty years, browsers have been following that path from left, to right, in a single pass.
+	
+	Even if we can solve the problem of infinite loops -- a giant backwards arrow and, finite trips around the loop are still problematic. Especially when browsers assume and have always assumed that we can figure out which styles apply to what elements BEFORE we know how large those elements are.
+	</aside>
+</section>
+
+
+
+<section>
+
+<div style="zoom: 0.8;" />
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Currently selectors are run and styles computed independently, and before, layout. They&#39;re separate layers.</p>&mdash; fantasai (@fantasai) <a href="https://twitter.com/fantasai/status/818560290224619520">January 9, 2017</a></blockquote>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Layout engine architecture is currently designed around this split.</p>&mdash; fantasai (@fantasai) <a href="https://twitter.com/fantasai/status/818561591427801088">January 9, 2017</a></blockquote>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Changing that would require major high level architectural work in all engines.</p>&mdash; fantasai (@fantasai) <a href="https://twitter.com/fantasai/status/818561896961802240">January 9, 2017</a></blockquote>
+
+<blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">Which isn&#39;t impossible, but certainly isn&#39;t going to be easy.</p>&mdash; fantasai (@fantasai) <a href="https://twitter.com/fantasai/status/818562265574084608">January 9, 2017</a></blockquote>
+</div>
+
+<aside class="notes">
+Nicely summarized by Erika ETODO, aka fantasai, of CSS Working Group fame, in response to a question asked by none other than Sarah, about what it would take for Container queries to become a thing.
+
+
+</aside>
 </section>
 
 <section>
-<h1>Browsers</h1>
-<p>[browser diagram goes here]</p>
+<blockquote class="mailing-list">
+<pre>
+<span class="meta">On Thu, 21 Mar 2013 at 3:08 PM, <a href="https://lists.w3.org/Archives/Public/www-style/2013Mar/0403.html">Elliott Sprehn wrote</a>:</span>
+
+<span class="meta">&gt;</span> This doesn't seem very easy to implement because <em>it breaks the sequential</em>
+<span class="meta">&gt;</span> <em>processing model</em>:
+<span class="meta">&gt;</span> 
+<span class="meta">&gt;</span> 1. resolve style on elements such that you have a flattened set of
+<span class="meta">&gt;</span> properties.
+<span class="meta">&gt;</span> 2. layout the elements if things are different then the last time we did
+<span class="meta">&gt;</span> step 1.
+
+<span class="meta">&gt;</span> <em>This would be a big undertaking in Webkit so I don't think it falls</em>
+<span class="meta">&gt;</span> <em>anywhere in the near future.</em>
+
+
+<span class="meta">On Thu, Mar 21, 2013 at 6:34 PM, <a href="https://lists.w3.org/Archives/Public/www-style/2013Mar/0421.html">Elliott Sprehn wrote</a>:</span>
+
+<span class="meta">&gt;</span> I think there's a high implementation cost for this kind of thing
+
+<span class="meta">&gt;</span> <em>It certainly could be done given enough time and someone very</em>
+<span class="meta">&gt;</span> <em>motivated...</em>
+</pre>
+</blockquote>
+
 <aside class="notes">
-HTML → DOM
-            >→ Rendering tree → Box tree → Layout 
-CSS → CSSOM
+And here’s Elliott Sprehn, WebKit implementor, saying the same thing on the www-style mailing list.
+
+Container queries would be an unusually large amount of work, for implementors.
+
+As we’ve seen, they’re’s also been an extraordinary amount of demand for them, from authors.
+
+So we’ve got an unstoppable force, which is authors working with components in responsive designs, yearning for container queries — meeting an immovable object, which is 20 years of tightly-optimized code in browsers, whose fundamental architectural assumptions, container queries would break.
+
+What happens when those things collide?
 </aside>
+</section>
+
+<section>
+	<blockquote>
+	<img src="images/priority-of-constituencies.png" alt="Section 3.2 of the HTML design principles, which reads, “In case of conflict, consider users over authors over implementors over specifiers over theoretical purity.”" />
+	<footer>—<cite><a href="https://www.w3.org/TR/html-design-principles/#priority-of-constituencies">HTML Design Principles</a></cite></footer>
+	</blockquote>
+	<aside class="notes">
+	Luckily, we have this passage the HTML design principles to guide us through it. The priority of constituencies, which states that...
+	
+	This is a beautiful statement, which, at multiple levels, implores the powerful few to understand and serve the relative many, who must live with the products and consequences of their work.
+
+	Also, it means, we win, right!? Authors over implementors! That means if we 
+	want container queries, but implementors think they’re really hard or whatever – too bad! quit your bitchin’ and start re-architectin’!
+	
+	But. In this hierarchy. There is one constituency whose concerns can, and should, matter more than ours. [click] Users. Which brings us to the last, biggest, and best reason that Container Queries aren’t a thing yet.
+	</aside>
+	<script>
+	var section = document.currentScript.parentNode;
+
+	section.init = ( ( section ) => { 
+		section.screenshot = section.querySelector('img');
+		section.srcs = [
+			section.screenshot.src,
+			'images/authors-over-implementors.png',
+			'images/users-over-authors.png'
+		];
+	} );
+	
+	section.events = [
+		{
+			do: ( section ) => {
+				section.screenshot.src = section.srcs[1];
+			},
+			undo: ( section ) => {
+				section.screenshot.src = section.srcs[0];
+			}
+		},
+		{
+			do: ( section ) => {
+				section.screenshot.src = section.srcs[2];
+			},
+			undo: ( section ) => {
+				section.screenshot.src = section.srcs[1];
+			}
+		}
+	];
+	</script>
 </section>
 
 
@@ -910,7 +1166,22 @@ CSS → CSSOM
 	<p class="bigemoji center">🐌</p>
 	<p>Problem #3:</p>
 	<h1>Fundamentally slow</h1>
+	<aside class="notes">
+
+	</aside>
 </section>
+
+<section>
+	<p class="bigemoji center">🐇</p>
+	<p>Need to be FAST</p>
+	<aside class="notes">
+First load paint isn't actually all that important, relative to everything coming over the network.
+
+But after that, during resizes, animations, or user interactions – paint happens at the refresh rate of the display -- usually 60 times per second.
+	</aside>
+</section>
+
+
 
 
 <section>

@@ -1248,8 +1248,8 @@ They were too slow. But boy do we miss them.
 </aside>
 </section>
 
-<section>
-<p>So what's the solution, here??</p>
+<section class="title">
+<p>Paths forward</p>
 <aside class="notes">
 I'm happy to report that some very, very smart people have some very good ideas and are actively working on pieces of the puzzle.
 </aside>
@@ -1285,7 +1285,7 @@ ResizeObserver.
 
 ResizeObserver gives you *all kinds* of great container-query-ish tools, actually.
 
-First and foremost, it lets you attatch resize event listeners to actual elements -- the current batch of prolyfills have to listen to a whole bunch of other events –– anything that could possibly lead to an element resize, like window resize and dom mutation -- and then in response to those possibly-related events they have to manually check to see if any element resizing has happened.
+First and foremost, it lets you attach resize event listeners to actual elements -- the current batch of prolyfills have to listen to a whole bunch of other events –– anything that could possibly lead to an element resize, like window resize and dom mutation -- and then in response to those possibly-related events they have to manually check to see if any element resizing has happened.
 
 ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry that the browser was already maintaining. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces an expensive reflow to insure that those queried styles are up to date. ResizeObserver gives you the geometry of the element much more cheaply.
 
@@ -1297,83 +1297,21 @@ You've already seen examples of that. This slide deck is running a very simple, 
 
 In short, ResizeObserver, especially when combined with contain: strict -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
 
-Which brings me to the next big idea to solve Container Queries. And it's where you all come in.
+Which brings me to the last big idea that the smartest spec folks and browser folks in the world have about how to solve Container Queries. It's where you all come in.
 </aside>
 </section>
 
 <section>
 <h1>Houdini</h1>
-</section>
-
-<section>
-<h1>Layout depending on layout</h1>
-<p>Three problems</p>
-<div style="font-size: 0.4em; font-family: sans-serif !important;">
-<ol>
-	<li>🔁 Potential for Circularity 
-		<ol>
-			<li>As millions of Microsoft Excel know, cicular references are bad and confusing [screenshot]</li>
-			<li>Fun demo!
-				<ol>
-					<li>anything that changes the width</li>
-				</ol>
-			</li>
-			<li>Container queries idea
-				<li>first iteration, nah
-					<ol>
-						<li>because containers can depend on the width of their contents
-						</li>
-					</ol>
-				</li>
-				<li>Ausi’s, yeah?</li>
-			</li>
-			<li>A blunter tool: <code>contain: strict;</code>
-				<ol>
-					<li>Is this going to be weird and limiting?</li>
-				</ol>
-			</li>
-		</ol>
-	</li>
-	<li>🏚 Breaks browser layout engine architecture
-		<ol>
-			<li>1-pass layout.</li>
-			<li>Again, layout is really complicated</li>
-			<li>Browsers were built to go from rendering tree → layout exactly once. Always have, are heavily optimized around that assumption, and talk about changing it with scary words like “fundamental architectural layering violation”</li>
-			<li>Not impossible, but a whole, whole lot of work</li>
-		</ol>
-	</li>
-	<li>🐌 Fundamentally slow
-		<ol>
-			<li>Despite being so complicated, layout needs to happen FAST</li>
-			<li>You can re-architect layout engines to make two-pass layout possible, but it’s always going to be slower, and opens the door for extreme slowness. 
-				<ol>
-					<li>(nested 2 pass layouts, even if none are infinte)</li>
-					<li>Dave baron quote</li>
-				</ol>
-			</li>
-			<li>Resizing, specifically, is a very hot path - potentially having to re-do large swaths of potentially-many-pass layout on every frame is REALLY BAD
-				<ol>
-					<li>Example?</li>
-				</ol>
-			</li>
-			<li>We’ve made this mistake before: microsoft’s mistake</li>
-			<li>Solution: Asynchronous
-				<ol>
-					<li>What is a synchronous</li>
-					<li>ResizeObserver</li>
-				</ol>
-			</li>
-		</ol>
-	</li>
-</ol>
-</div>
 <aside class="notes">
+
 </aside>
 </section>
 
 
+
 <section>
-<h1>Houdini & prollyfills</h1>
+<h1>Prolyfills</h1>
 <p>cq-prollyfill, eqcss</p>
 </section>
 
@@ -1386,27 +1324,6 @@ Which brings me to the next big idea to solve Container Queries. And it's where 
 	<li>generalized conditionals for css
 </ul>
 </section>
-
-<section>
-<h1>Speculative polyfills</h1>
-<p>cq-prollyfill, eqcss</p>
-</section>
-
-<section class="title">
-<h1>Is anyone doing element queries?</h1>
-<p>Yes. Slowly.</p>
-</section>
-
-<section>
-<h1>In the wild</h1>
-<ul>
-<li>Spotify backend</li>
-<li>weather.com news modules</li>
-<li>some real estate website...</li>
-</ul>
-<p>source: dave rupert gist</p>
-</section>
-
 
 
 <section>

@@ -1188,49 +1188,69 @@ So that’s 16 milliseconds of time that the browser (and whatever javascript yo
 	</aside>
 </section>
 
-<section>
-	<img src="" alt="A screenshot of smashingconf.com with the dev tools open" />
-	5ms median / 
+<section class="center">
+	<img src="images/smashingconf.png" alt="A screenshot of smashingconf.com with the dev tools open" style="height: 11em;" />
+	<p style="margin-top: -1em;">5ms best / 35ms worst</p>
 	<aside class="notes">
 Let me give you a high-level sense of what that number means... My computer is not a low-powered mobile device, it’s a 15" macbook pro.
 
 And when I load a fairly simple, well-architected, responsive page that uses media queries, like, say SmashingConf.com, and measure the perf of the site while I resize the window a bunch, I can drill down with the dev tools and see that, most of these frames are happening right on schedule at 60FPS. And most of that time is idle, too – the browser is spending about 4-5 ms re-figuring layout and re-painting in response to the changing window size, but it has 10ms to spare.
 
-We do actually drop a couple of frames every once and a while -- it looks here like I hit a major breakpoint right at the end of a 16ms beat, and the browser had to spend 17ms calculating and painting the new, significantly different layout... bad luck, but, still, visually nearly seamless.
+We do actually drop a couple of frames every once and a while -- it looks here like I hit a major breakpoint right at the end of a 16ms beat here, and the browser had to spend a chunk of time calculating and painting the new, significantly different layout, and we ended up missing a couple of frames... bad luck, but still, visually, the experience of resizing this page is nearly seamless.
 
-So that gives you some sense of the time scales and headroom involved here. Now, let’s think about container queries.
+So that gives you a little bit of a sense, maybe of the baseline we're working with - of what that 16ms budget actually feels like, in practice.
 	</aside>
 </section>
 
 <section>
-<object>
-	diagram
-</object>
+	<object type="image/svg+xml" data="images/how-browsers-work.svg" style="grid-column: 1 / 4; width: 100vw; height: 100vh;" onload="
+	// change “element” to “container”
+	let svg = this.getSVGDocument();
+	let elQ = svg.getElementById('element-queries-text');
+	let coQ = svg.getElementById('container-queries-text');
+	elQ.classList.add( 'none' );
+	coQ.classList.remove( 'none' );
+	">
+	 A big ol' diagram
+	</object>
 <aside class="notes">
-Here's our pipeline again.
+So let's talk about container queries, and how they fit in.
+
+Here’s our pipeline again, with the big loop
 
 Even if we've figured out how to prevent infinite loops, and even if we re-architect browsers to be able to walk backwards, to do *a* loop – container queries, fundamentally, require taking one or more trips around the loop. Basing styles on styles and layout on layout is literally the whole point.
 
 Every trip around the loop takes time. And if we start using container queries as liberally as we use media queries, today – container-querying all the things and especially nesting container queried components within container-queried components – we might be taking dozens or even hundreds of trips around the loop, each frame.
 
 That's bad for users.
+
+Let's look at an example.
 </aside>
 </section>
 
 <section>
-<img src="" alt="EQCSS homepage screenshot" />
+<img src="images/eqcss.png" alt="EQCSS homepage screenshot" />
 <aside class="notes">
-I’ve already mentioned one polyfill – Martin Auswoger’s cq-prolyfill – here’s another: Tommy Hodgin’s EQCSS. Tommy has done more work than anyone, anywhere, advocating for Container Queries. He’s built this pollyfill, stuffed it with features, and is amassing a frankly staggering library of demos. So I asked him for his worst-performing demo.
+But first, briefly - I’ve already mentioned one polyfill – Martin Auswoger’s cq-prolyfill – here’s another: Tommy Hodgin’s EQCSS. Tommy has done more work than anyone, anywhere, advocating for Container Queries. He’s built this pollyfill, stuffed it with features, and is amassing a frankly staggering library of demos. So I asked him for his worst-performing demo.
 </aside>
 </section>
 
-<section>
-<img src="" alt="EQCSS homepage screenshot" />
+<section class="center">
+<img src="images/pricing-chart.png" alt="A screenshot of the pricing comparison which performed so badly" />
+<p>30ms best / 100ms worst</p>
 <aside class="notes">
-He kindly sent me this pricing comparison chart. And when I resize this, well, it's not pretty. The worst frames here are taking an order of magnitude more time than browsers like them to -- 150ms -- we’re missing ten frames in a row, here. Often. If you drill down and look what’s taking all of that time, Chrome Dev Tools shows you all of these little purple layout boxes with bright red corners, signifying forced reflows that the plugin needed to do as part of its container-querying-work. Each one is a small trip around the element-query loop for some subtree of the page.
+He kindly sent me this pricing comparison chart. And when I resize this, well, it's not pretty. The worst frames here are taking an order of magnitude more time than browsers like them to -- 150ms -- we’re missing ten frames in a row, here. Often. If you drill down and look what’s taking all of that time, Chrome Dev Tools shows you all of these little purple layout boxes with bright red corners, signifying forced reflows that the plugin needed to do as part of its container-querying-work. A lot of those represent small trips around this plugin’s implementation of the element-query loop for some subtree of the page.
 </aside>
 </section>
 
+
+<section class="center">
+<img src="images/shopify.png"  alt="Two screenshots of the Shopify admin page, showing how it responsively adapts" />
+<p>Shopify <a href="http://www.creativebloq.com/features/how-to-make-responsive-web-apps-with-container-queries">implemented</a> container queries!</p>
+<aside class="notes">
+And indeed - bad performance is what killed what was, to my knowledge, the first big deal in-production implementation of container queries, on Shopify's admin pages. [Jonathan Snook, who I think is in the audience today, led the implementation], which they’ve since moved away from.
+</aside>
+</section>
 
 <section>
 <blockquote class="twitter-tweet" data-conversation="none"  data-lang="en"><p lang="en" dir="ltr"><a href="https://twitter.com/_lemonmade">@_lemonmade</a> <a href="https://twitter.com/snookca">@snookca</a> Any insight into why Shopify moved away from JS-based container queries in the admin? FoUC, or?</p>&mdash; Eric Portis (@etportis) <a href="https://twitter.com/etportis/status/870280168413085696">June 1, 2017</a></blockquote>
@@ -1240,9 +1260,7 @@ He kindly sent me this pricing comparison chart. And when I resize this, well, i
 <blockquote class="twitter-tweet" data-conversation="none" data-lang="en"><p lang="en" dir="ltr">But were they ever a joy to use. I miss them.</p>&mdash; Scott Vinkle (@svinkle) <a href="https://twitter.com/svinkle/status/870462425199497216">June 2, 2017</a></blockquote>
 
 <aside class="notes">
-And indeed - bad performance is what killed what was, to my knowledge, the first big production implementation of container queries. [Jonathan Snook] Shopify implemented a javascript-based form of container queries on their admin pages three years ago, but have since moved entirely away from them.
-
-I asked why and got this pair of responses, which is just about perfect.
+I asked why and got this pair of responses, which sums up the promise and peril of container queries nicely.
 
 They were too slow. But boy do we miss them.
 </aside>
@@ -1251,6 +1269,8 @@ They were too slow. But boy do we miss them.
 <section class="title">
 <p>Paths forward</p>
 <aside class="notes">
+So, where does that leave us?
+
 I'm happy to report that some very, very smart people have some very good ideas and are actively working on pieces of the puzzle.
 </aside>
 </section>
@@ -1332,6 +1352,10 @@ How many of you have heard of Houdini?
 </ul>
 </section>
 
+<section>
+<h1>write EQs, deploy MQs</h1>
+<p>translate as a build step</p>
+</section>
 
 <section>
 <h1>What can you do?</h1>

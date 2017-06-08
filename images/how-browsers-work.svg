@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="100%" height="100%" viewBox="0 0 4800 2700" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:1.5;">
-    <rect x="-29.44" y="-177.377" width="4857.56" height="2964.1" style="fill:#0071BA;stroke:rgb(5,11,188);stroke-width:1px;"/>
+<style>
+
+@font-face {
+	font-family: 'SooperSansThick';
+	src: url('/fonts/sooper/soopersans-thick-webfont.eot');
+	src: url('/fonts/sooper/soopersans-thick-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('/fonts/sooper/soopersans-thick-webfont.woff') format('woff'),
+	     url('/fonts/sooper/soopersans-thick-webfont.ttf') format('truetype');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'SooperSerifThinCondensed';
+	src: url('/fonts/sooper/sooperserif-thincondensed-webfont.eot');
+	src: url('/fonts/sooper/sooperserif-thincondensed-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('/fonts/sooper/sooperserif-thincondensed-webfont.woff') format('woff'),
+	     url('/fonts/sooper/sooperserif-thincondensed-webfont.ttf') format('truetype');
+	font-weight: normal;
+	font-style: normal;
+}
+
+.none {
+	display: none !important;
+}
+</style>
+
+
+
     <g id="HTML">
         <g transform="matrix(0.701282,0,0,0.701282,182.211,882.295)">
             <g transform="matrix(0.775322,0,0,0.775322,7.87631,65.1457)">
@@ -248,10 +276,12 @@
         <path d="M3646.46,1088.24C3690.47,1044.54 3733.26,993.574 3721.29,929.664C3668.88,649.846 2909.74,608.406 2793.39,606.88C2305.04,600.475 1366.67,629.92 1068.65,998.131C1003.91,1078.12 994.615,1210.56 1088.89,1277.55C1105.02,1289.01 1134.15,1297.89 1155.21,1299.74C1183,1302.17 1199.85,1302.56 1227.64,1299.96C1231.96,1299.56 1324.83,1282 1318.51,1275.18C1296.49,1251.39 1232.31,1258.21 1273.33,1261.18C1282.81,1261.87 1292.46,1263.35 1300.97,1267.43C1306.78,1270.22 1311.12,1274.4 1313.31,1279.93C1314.46,1282.83 1314.31,1285.95 1314.31,1288.97C1314.31,1305.05 1303.44,1303.16 1289.67,1339.62" style="fill:none;stroke:rgb(255,225,66);stroke-width:14.22px;"/>
         <g>
             <path d="M2648.81,500.738L1802.23,553.475L1815.38,764.649L2661.96,711.913L2648.81,500.738Z" style="fill:#0071BA;"/>
-            <g transform="matrix(1.20293,-0.0749354,0.0279142,0.448105,-619.14,651.73)">
+            <g id="container-queries-text" transform="matrix(1.20129,-0.0978122,0.036436,0.447493,-612.734,710.951)" class="none">
                 <g transform="matrix(0.802637,0,0,2.15467,391.549,-247.61)">
-                    <text x="2063.7px" y="335.041px" style="font-family:'SooperSerif-ThinCondensed', 'Sooper Serif';font-weight:250;font-stretch:condensed;font-size:172.285px;fill:none;">E<tspan x="2106.25px 2155.87px 2201.7px 2281.81px 2330.57px 2392.59px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">LEMENT</tspan> Q<tspan x="2508.54px 2564.53px 2607.09px 2660.15px 2688.58px 2738.88px 2781.44px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">UERIES!</tspan>?</text>
+                    <text x="2029.5px" y="335.041px" style="font-family:'SooperSerif-ThinCondensed', 'Sooper Serif';font-weight:250;font-stretch:condensed;font-size:172.285px;fill:rgb(255,225,66);stroke:rgb(255,225,66);stroke-width:3.2px;stroke-linecap:butt;stroke-miterlimit:1.41421;">C<tspan x="2075.85px 2125.46px 2187.49px 2224.7px 2283.45px 2314.46px 2373.73px 2416.28px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">ONTAINER</tspan> Q<tspan x="2542.74px 2598.73px 2641.28px 2694.35px 2722.78px 2773.08px 2815.64px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">UERIES!</tspan>?</text>
                 </g>
+            </g>
+            <g id="element-queries-text" transform="matrix(1.20129,-0.0978122,0.036436,0.447493,-615.734,711.008)">
                 <g transform="matrix(0.802637,0,0,2.15467,391.549,-247.61)">
                     <text x="2063.7px" y="335.041px" style="font-family:'SooperSerif-ThinCondensed', 'Sooper Serif';font-weight:250;font-stretch:condensed;font-size:172.285px;fill:rgb(255,225,66);stroke:rgb(255,225,66);stroke-width:3.2px;stroke-linecap:butt;stroke-miterlimit:1.41421;">E<tspan x="2106.25px 2155.87px 2201.7px 2281.81px 2330.57px 2392.59px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">LEMENT</tspan> Q<tspan x="2508.54px 2564.53px 2607.09px 2660.15px 2688.58px 2738.88px 2781.44px " y="335.041px 335.041px 335.041px 335.041px 335.041px 335.041px 335.041px ">UERIES!</tspan>?</text>
                 </g>

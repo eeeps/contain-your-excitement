@@ -339,7 +339,7 @@ Whether you’re working with Web Components, React components, <a href="http://
 }
 </code></pre>
 <pre class="elementquery" style="height: 8em;"><code class="language-css">
-.block:when(min-width: 100px) {
+.block:min-width(100px) {
 	background-color: deeppink;
 }
 </code></pre>
@@ -788,7 +788,7 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 	</div>
 </div>
 <pre><code class="language-css">
-.block:when(width > 10em) {
+.block:min-width(10em) {
 	width: 5em;
 }
 </pre></code>
@@ -827,7 +827,7 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 	display: flex;
 }
 
-.block:when(width > 3em) {
+.block:min-width(3em) {
 	border: 0.25em solid deeppink;
 }
 </pre></code>
@@ -873,7 +873,7 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 	display: flex;
 }
 
-.block:when(width > 3.25em) {
+.block:min-width(3.25em) {
 	letter-spacing: 0.1em;
 }
 </pre></code>
@@ -1257,10 +1257,13 @@ I'm happy to report that some very, very smart people have some very good ideas 
 
 <section>
 <h1>Containment</h1>
+<p>to the rescue?</p>
 <aside class="notes">
-The first puzzle piece, we've already mentioned, actually. CSS Containment, in addition to getting us out of the infinite container query loop problem, may help us offset some of the speed penalties inherent to container queries, too. When we prevent children from being able to influence the size or style of their parents, turns out, we can usefuly paralellize and optimize a bunch of layout work. So perhaps, a solution that brought a lot of both container queries but also layout containment to the web, wouldn't be so bad.
+The first puzzle piece, we've already mentioned, actually. CSS Containment, in addition to getting us out of the infinite container query loop problem, may actually help offset some of the speed penalties inherent to container queries, too. When we prevent children from being able to influence the size or style of their parents, turns out, we can usefuly paralellize and optimize a bunch of layout work. So perhaps, a solution that brought a lot of both container queries but also layout containment to the web, wouldn't be so bad for layout performance after all.
 
 I haven’t done a lot of testing here myself, but Paul Lewis published an example when the contain property landed in Chrome, wherein the layout time for a page dropped from 50-something ms down to 0.05ms, all because of this one weird CSS property.
+
+https://developers.google.com/web/updates/2016/06/css-containment
 
 Seems promising?
 </aside>
@@ -1268,43 +1271,47 @@ Seems promising?
 
 <section>
 <h1>Asynchronicity</h1>
+<p>Knock. there? Async container queries Who’s knock!</p>
 <aside class="notes">
-The second idea: make sure that, even if our container querying is slow, we minimize the damage that we’re doing to users’ experiences by doing some of the work asynchronously.
+The second idea: make sure that, even if our container querying is slow, we minimize the damage that we’re doing to users’ experiences by doing the work asynchronously.
 
-Media queries are synchronous. Immediately after a media query becomes true or false, the browser’s entire world stops and it makes every adjustment that it needs to, in order to respond to the change.
+Browsers respond to Media Queries synchronously. Which is to say, immediately after a media query toggles between true and false, the browser’s entire world stops for as long as it needs to so that it can respond to the change.
 
-If we can't make container queries as performant as media queries, perhaps we can make them a little less world-stopping. We can let the browser re-schedule container query work, or even move it to another thread, so that we can continue to keep the rest of the user’s experience from feeling "stuck".
+If we can't make container queries as performant as media queries, perhaps we can make them a little less world-stopping. We can let the browser re-schedule container query work, or even move it to another thread, so that we can continue to keep the rest of the user’s experience from feeling "stalled" or "stuck".
 
 I’m happy to report that there’s a working implementation of this idea too, behind a flag in Chrome: 
 </aside>
 </section>
 
 <section>
+<h1>ResizeObserver</h1>
 <aside class="notes">
 ResizeObserver.
 
-ResizeObserver gives you *all kinds* of great container-query-ish tools, actually.
+The more I learn about ResizeObserver, the more I love it. It’s a purpose-built Container Query toolkit.
 
-First and foremost, it lets you attach resize event listeners to actual elements -- the current batch of prolyfills have to listen to a whole bunch of other events –– anything that could possibly lead to an element resize, like window resize and dom mutation -- and then in response to those possibly-related events they have to manually check to see if any element resizing has happened.
+First and foremost, it lets you attach resize event listeners directly to elements. The current batch of prolyfills have to listen to a whole bunch of possibly-related events –– like window resizes and DOM changes -- and then check to see if any element resizing actually happened.
 
-ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry that the browser was already maintaining. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces an expensive reflow to insure that those queried styles are up to date. ResizeObserver gives you the geometry of the element much more cheaply.
+ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry that the browser is already maintaining. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces a reflow to insure that the queried styles are up-to-date. ResizeObserver gives you access to fresh element geometry far more cheaply.
 
-Next up, asynchronusness. The callbacks that you register with ResizeObserver are run as what browser folks call "microtasks." Which means that the browser doesn’t drop everything and run them as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This is really important, actually. It ensures that you're not doing any work too early -- you're not going to be surprised by any additional layout changes that you weren't expecting -- and that you’re not interrupting any other super-important intra-frame work.
+Next up is what we started with: asynchronusness. The callbacks that you register with ResizeObserver are treated as what browsers call "microtasks." Which means that the browser doesn’t drop everything and run them on the main thread as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This is really important, actually. It ensures that you're not doing any work too early -- you're not going to be surprised by any additional layout changes that you weren't expecting -- or too late -- the browser will wait and paint when you're done. Most importantly, batched-up asynchronous callbacks don’t interrupt or forestall any other super-important intra-frame work - like, say, responding to user input.
 
-Oh! And! It also features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→callback→layout→callback→layout→callback loops. But it does have a thoughtful, nesting-depth-level-based strategy to make sure that it breaks out of those loops at sensible times in order to paint.
+Oh! And! ResizeObserver also features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→response→layout→response→layout→response loops. But it does use a thoughtful strategy – based on nesting-levels - to make sure that it breaks out of those loops in sensible ways in order to paint once a frame.
 
-You've already seen examples of that. This slide deck is running a very simple, ResizeObserver-based container-query implementation that I threw together for the purposes of this talk. All of the looping examples that I've shown you flicker, rather than just hit a call stack limit and throw an exception, because of ResizeObserver.
+You've already seen examples of that. This slide deck, the one right in front of you now, is running a simple, ResizeObserver-based container-query implementation that I slapped together for the purposes of this talk. All of the looping examples that I've shown you flicker between states exactly once per frame, without freezing, stuttering, throwing a call stack exception, or preventing me from scrolling or otherwise interacting with the page, because they were built with ResizeObserver.
 
-In short, ResizeObserver, especially when combined with contain: strict -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
+In short, ResizeObserver -- especially when combined with explicit style containment -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
 
-Which brings me to the last big idea that the smartest spec folks and browser folks in the world have about how to solve Container Queries. It's where you all come in.
+But, of course, we want to use them in CSS.
+
+Which brings me to the last big idea that the smartest spec and browser folks in the world have about how to solve Container Queries. It's where we come in.
 </aside>
 </section>
 
 <section>
 <h1>Houdini</h1>
 <aside class="notes">
-
+How many of you have heard of Houdini?
 </aside>
 </section>
 

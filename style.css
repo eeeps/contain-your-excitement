@@ -198,8 +198,9 @@ twitterwidget::shadow .Tweet-brand {
 }
 
 .mailing-list {
+	margin: 0;
 	font-family: Courier, monospace;
-	font-size: 0.3rem;
+	font-size: calc( 0.2rem + 0.25vw );
 	border-radius: 0.25rem;
 	background-color: white;
 	color: var(--black);

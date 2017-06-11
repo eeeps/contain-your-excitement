@@ -16,31 +16,43 @@
 <!--
 # TODO
 
+[ ] PRACTICE
+
 # content
 
-[ ] last slides
+[x] last slides
 [x?] clarify async + why JS over CSS
-[ ] modular ilustration
-[ ] intro illustration
+[x] modular ilustration
+[x] intro illustration
+[ ] thanks page
 [ ] make the word "jank" jiggle
+[ ] github issue screenshot
 
-## get ready for public access
+
+## public access?
 
 [ ] incorperate https://github.com/que-etc/resize-observer-polyfill
 [ ] figure out some kind of not-secret UI for pageup/pagedown
-[ ] intersectionObserver polyfil too, then?
+[ ] intersectionObserver polyfill too, then?
+[ ] publish to github
+[ ] update links on thanks (and intro?) page(s)
 
 -->
 
 <section id="1" class="title">
-	<h1>
-		<span>Contain</span>
-		<span class="twox" style="display: block; border-top: 1px solid white;">Your Excitement</span>
+	<h1 style="background-image: url(images/separator.svg); background-repeat: no-repeat; background-position: 0 46%;">
+		<span style="font-size: 3.125rem;">
+			Contain
+		</span>
+		<span class="twox" style="display: block; font-size: 2.73rem; margin-top: 0.4rem;">
+			Your Excitement
+		</span>
 	</h1>
-	<hr style="width: 10em; margin: 0;" />
-	<p class="twox center" style="color: var(--light-fg);">
+	<p class="twox center" style="font-size: 1.05rem;">
 		Eric Portis ★ SmashingConf NYC ★ 2017-06-13
 	</p>
+	<div class="layer" style="font-size: 3.125rem; width: 12.5ch; height: 9rem; background-image: url(images/contain-starburst.svg); background-repeat: no-repeat; background-position: center; background-size: 60%; left: -3.5ch; top: 5vh;">
+	</div>
 </section>
 
 <section class="title" id="2">
@@ -196,7 +208,7 @@ I suppose a brief note on terminology is in order
 <p style="font-size: 1.5em;">“Element?” “Container?”</p>
 <h1 style="margin-top: 0.25em;">Same-same.</h1>
 <aside class="notes">
-We’ll get into the distinction between “element” and “container” queries a bit later, but for the first part of this talk, I and some folks that I’ll be quoting will use the terms more or less interchangably.
+We’ll get into the distinction between “element” and “container” queries a bit later, but for the first part of this talk, I’ll use the terms more or less interchangably.
 </aside>
 </section>
 
@@ -204,7 +216,7 @@ We’ll get into the distinction between “element” and “container” queri
 <section class="center">
 <h1 style="margin-top: 0.25em;">= media queries for elements</h1>
 <aside class="notes">
-And I’ll be using the terms to refer to an idea. In a nutshell: we should be able to adapt element’s styles based on their own state. Not just the state of the entire viewport.
+Both terms to refer to the same idea. In a nutshell: we should be able to adapt element’s styles based on their own state. Not just the state of the entire viewport.
 </aside>
 </section>
 
@@ -215,7 +227,7 @@ And I’ll be using the terms to refer to an idea. In a nutshell: we should be a
 	<aside class="notes">
 It’s worth taking a moment to think about about where Media Queries came from.
 
-How many of are old enough to have written a print-specific stylesheet?
+How many of have ever written a print-specific stylesheet?
 	</aside>
 </section>
 
@@ -249,13 +261,19 @@ How many of are old enough to have written a print-specific stylesheet?
 <footer><p>Example from <a href="https://www.w3.org/TR/2001/WD-css3-mediaqueries-20010404/">the original Media Queries specification</a>, published in 2001.</p></footer>
 
 <aside class="notes">
-Well the original media queries spec, piblished sixteen years ago, opens with the following example. This is something that I’m just barely old enough to remember. But ten or twenty years ago, it was not unheard of for webmasters to provide one style sheet for screens, and a completely different stylesheet for print, containing page styles tailored for 8.5x11, high-resolution, black-and-white, laser-printed pieces of good-old-fashioned paper.
+Well the original media queries spec, piblished sixteen years ago, opens with the following example. In ye olden dayes, it was not unheard of for webmasters to provide one cascading style sheet for screens, and a separate cascading style sheet for print, containing styles tailored for laser-printed pieces of good-old-fashioned paper.
 
-The media queries spec says, hey, this is a decently common use case -- how about we let you wrap these two sets of styles up into the same stylesheet, like this [click]. Media queries let you wrap your media-specific styles in a little @media block -- no separate stylesheet required.
+The media queries spec says, hey, this is a decently common use case -- how about we let you wrap these two sets of styles up into the same stylesheet, like this:
 
-As luck would have it, the spec authors also decided that, as long as they were letting you query media *types*, why not also let you query specific media *features*, say, width? [click]
+[click]
 
-And just like that, the media queries we all know and love -- along with so much of what we now call "responsive design" -- was born.
+Media queries let you wrap your media-specific styles in a little @media block -- no separate stylesheet required.
+
+As luck would have it, the spec authors thought, well, as long as we’re letting you query media *types*, we might as well also let you query specific media *features*, like width.
+
+[click]
+
+And just like that, the media queries we all know and love were born.
 </aside>
 
 	<script>
@@ -296,21 +314,49 @@ And just like that, the media queries we all know and love -- along with so much
 </section>
 
 <section class="center">
-
-<!--TODO-->
-<img alt="scaling page with big word that changes from small to big" />
-<!--change to-->
-<img alt="scaling page full of individual components that all have their own small/big changes at different points" />
-<h1><del>Responsive pages</del><ins>Modular components</ins></h1>
+	<object type="image/svg+xml" data="images/page-vs-components.svg" style="height: 9em; margin: 0.5em auto;" onload="
+		let s = this.parentElement;
+		s.svg = this.getSVGDocument();
+		s.page = s.svg.getElementById('PAGE'),
+		s.components = s.svg.getElementById('COMPONENTs'),
+		s.components.classList.add('none');
+	">
+	</object>
+<h1>Responsive pages</h1>
 
 <aside class="notes">
-And, when we we’re designing web pages, and we want to adapt those pages in response to facts about the whole viewport, they’re a great solution.
+And when we we’re designing web *pages*, and we want to adapt those pages in response to the state of the *whole viewport*, they’re a great solution.
 
 But increasingly, we’re not really designing monolithic *pages*. We’re designing modular *components*. And what we want, is the ability to set breakpoints directly on those components.
 
-Whether you’re working with Web Components, React components, <a href="http://atomicdesign.bradfrost.com/chapter-2/">Brad’s Atomic Design elements</a>, <a href="https://smacss.com/book/type-module">SMACSS modules</a> or Object-OrientedCSS objects or BEM blocks, <a href="http://styleguides.io/">style-guides and pattern libraries</a>, or even just <a href="https://adactio.com/journal/4523">the high-level notion that we should be designing from our content, out, rather than the page’s frame, in</a> – media queries are a kludge and, in the words of Ian Storm Taylor, <a href="https://ianstormtaylor.com/media-queries-are-a-hack/">a hack</a>.
-
+Whether you’re working with Web Components, React components, Brad’s Atomic Design elements, SMACSS modules or Object-OrientedCSS objects or BEM blocks, style-guides and pattern libraries, or even just the semi-philosophical notion that we should be designing from our content, out, rather than the page’s frame, in – media queries are a kludge and in the words of Ian Storm Taylor, a hack.
 </aside>
+
+<script>
+	var section = document.currentScript.parentNode;
+	
+	// additional init done in svg.onload
+	section.init = ( ( section ) => {
+		section.h1 = section.querySelector('h1');
+		section.originalh1text = section.h1.innerHTML;
+	} );
+	
+	section.events = [
+		{
+			do: ( section ) => {
+				section.page.classList.add( 'none' );
+				section.components.classList.remove( 'none' );
+				section.h1.innerHTML = "Modular components";
+			},
+			undo: ( section ) => {
+				section.page.classList.remove( 'none' );
+				section.components.classList.add( 'none' );
+				section.h1.innerHTML = section.originalh1text;
+			}
+		}
+	];
+	
+</script>
 </section>
 
 
@@ -427,48 +473,17 @@ An example’s in order. Let’s say I've got a line of five little light-blue f
 
 And let’s say that when these boxes get to be 100px wide, I want to change them in some way – lets say I want to make them pink.
 
-So, I'll write a media query. I'll figure out how wide the entire viewport is, just as each element hits 100px-wide. And use that whole viewport width as my min-width, like this [click]
+So, I'll write a media query. I'll figure out how wide the entire viewport is, just as each element hits 100px-wide. And use that whole viewport width as my min-width, like this 
 
-Now what I’ve done here, that’s kludgy and bad, is bake a bunch of external state into what should just be a statement about the boxes. Remember, all I care about is the width the boxes. If they’re at least 100px wide, make them pink. But now I'm in a situation where, if many things *around* the boxes change -- let's say I tweak my margins [click], or change the number of boxes [click] -- The media query no longer does what I want, and I’ll have to change it. [click] That's bad!
+[click]
 
-What I really want to be able to say, here, is say exactly what I mean. When these specific *elements* are at least 100px wide, turn them pink. Like this [click].
+Now what I’ve done here, that’s kludgy and bad, is bake a bunch of external state into what should just be a statement about width of each box. Remember, all I care about is the width the boxes. If they’re at least 100px wide, make them pink. But now I'm in a situation where, if many things *around* the boxes change -- let's say I tweak my margins [click], or change the number of boxes [click] -- The media query no longer does what I want, and I’ll have to change it. [click] That's bad!
+
+What I really want to be able to say, here, is say exactly what I mean. When these specific *elements* are at least 100px wide, turn them pink. I want to be able to say something like this [click].
 
 That's an element query.
 	</aside>
 </section>
-
-<!--
-<section>
-<h1 class="center">Pretty neat!</h1>
-<p>Now show me something useful?</p>
-</section>
-
-
-<section id="5">
-<h1>Other use cases</h1>
-<ul>
-	<li>interactive content</li>
-	<li>modular components!</li>
-	<li>any kind of content-out (rather than viewport-in) design</li>
-</ul>
-<aside class="notes">
-Interactive content
-Best example, this slide deck right here?
-toolbars that fly out, resize in response to user input
-
-Modular components
-React... Atomic design, pattern libraries
-legos
-
-Content-out design
-Even if you’re designing static pages full of one-off design work, even if you don't care about modular reusable components at all
-Any time you're design from the content, out, rather than from page dimension and a given set of breakpoints, in -- you want element queries.
-- point back to weather widgets
-- mobile first, stretch it till it breaks, set a break point
-- dont want to have to re-write those breakpoints later, because some other part of the page changed
-</aside>
-</section>
--->
 
 
 <section id="tweets" class="title">
@@ -487,7 +502,7 @@ And hoo boy, have people been asking for them.
 </figcaption>
 </figure>
 <aside class="notes">
-Here’s the first mention I that could find of the general concept – an clear, concise, and six-year-old blog post from Andy Hume, complete with a working, javascript-based implementation and demo of the idea. Andy called them “Selector Queries”. 
+Here’s the first mention I that could find of the general concept – a clear and concise six-year-old blog post from Andy Hume, complete with a working, javascript-based implementation and demo of the idea. Andy called them “Selector Queries”. 
 </aside>
 </section>
 
@@ -666,16 +681,9 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 	</aside>
 	<script>
 		var section = document.currentScript.parentNode;
-		
-// 		section.init = ( ( section ) => {
-// 			section.object = section.querySelector('object');
-// 			section.svg.addEventListener( 'load', () => {
-// 				section.svg = section.querySelector('object').getSVGDocument();
-// 			} );
-// 			// section.html = section.svg.getElementById('HTML');
-// 			// section.html.setAttribute('visibility', 'hidden');
-// 		} );
-		
+
+		// do the init-ing on svg.onload instead
+
 		section.events = [
 			{
 				do: ( section ) => {
@@ -1048,10 +1056,8 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 </section>
 
 <section>
-<img src="images/cq-prolyfill.png" alt="screenshot of Martin Auswoger’s blog post about container query solutions" style="height: 60vh; margin: -0.5em auto 0.5em auto;" />
-<p>Conceived of + implemented by Martin Auswoger</p>
-<footer>
-<p><a href="https://github.com/ausi/cq-prolyfill">https://github.com/ausi/cq-prolyfill</a> + <a href="https://au.si/css-container-element-queries">https://au.si/css-container-element-queries</a></p></footer>
+<img src="images/cq-prolyfill.png" alt="screenshot of Martin Auswoger’s blog post about container query solutions" style="height: 70vh; margin: -0.5em auto 0.5em auto;" />
+<p><a href="https://au.si/css-container-element-queries">Conceived of</a> + <a href="https://github.com/ausi/cq-prolyfill">implemented by</a> Martin Auswo<span class="diacritic" style="font-size: 0.6em;">¨</span>ger</p>
 </section>
 
 <section>
@@ -1131,11 +1137,9 @@ What happens when those things collide?
 </aside>
 </section>
 
-<section>
-	<blockquote>
-	<img src="images/priority-of-constituencies.png" alt="Section 3.2 of the HTML design principles, which reads, “In case of conflict, consider users over authors over implementors over specifiers over theoretical purity.”" />
-	<footer>—<cite><a href="https://www.w3.org/TR/html-design-principles/#priority-of-constituencies">HTML Design Principles</a></cite></footer>
-	</blockquote>
+<section class="center">
+	<img src="images/priority-of-constituencies.png" alt="Section 3.2 of the HTML design principles, which reads, “In case of conflict, consider users over authors over implementors over specifiers over theoretical purity.”" style="max-height: 75vh;" />
+	<p>From the <cite><a href="https://www.w3.org/TR/html-design-principles/#priority-of-constituencies">HTML Design Principles</a></cite>
 	<aside class="notes">
 	Luckily, we have this passage the HTML design principles to guide us through it. The priority of constituencies, which states that...
 	
@@ -1325,7 +1329,7 @@ I’m happy to report that there’s a working implementation of this idea too, 
 
 <section class="center">
 <img src="images/resizeobserver.png" style="height: 8em; margin: 0.5em auto;" alt="A screenshot of the ResizeObserver spec" />
-<h1>I <span style="color: red; text-shadow: 0.05em 0.05em 0.1em rgba(0,0,0,0.3); margin-right: 0.4ch;">❤</span>️ResizeObserver</h1>
+<h1>I <span style="color: red; text-shadow: 0.05em 0.05em 0.1em rgba(0,0,0,0.3); margin-right: 0.4ch;">❤</span>️<a href="https://wicg.github.io/ResizeObserver/">ResizeObserver</a></h1>
 <aside class="notes">
 And it's called ResizeObserver.
 
@@ -1351,7 +1355,7 @@ Which brings me to the last big idea that the smartest spec and browser folks in
 
 <section class="center">
 <p class="bigemoji" style="margin-bottom: 0.6em;"><span style="display: block; margin-top: -1em; transform: rotate(180deg) translate(0ch, -0.9em); font-size: 1.2em;">🎩</span>🐇</p>
-<h1>✨Houdini✨</h1>
+<h1>✨<a href="https://drafts.css-houdini.org/">Houdini</a>✨</h1>
 
 <aside class="notes">
 How many of you have heard of Houdini, or the Extensible Web Manifesto?
@@ -1502,9 +1506,9 @@ Each of these prolyfills solves the circularity and performance problems inheren
 
 <section>
 <h1>Fight jank!</h1>
-<p>Load container queries libraries in the <code class="language-html" style="font-size: 0.625em;">&lt;head&gt;</code>
+<p>Load container query libraries in the <code class="language-html" style="font-size: 0.625em;">&lt;head&gt;</code>
 <aside class="notes">
-One piece of advice, if you do: you may run into some jarring flashes of unstyled content, with these libraries. If you load them like you should be really be loading the rest of your javascript -- that is, after all of your HTML and CSS -- they’re going barge in like an obnoxiously late party guest and then immediately re-arrange all of your furniture.
+One piece of advice, if you do: you may run into some jarring flashes of unstyled content, with these libraries. If you load them like you should be really be loading the rest of your javascript -- after all of your HTML and CSS -- they’re going barge in like an obnoxiously late party guest and then immediately re-arrange all of your furniture.
 
 Thankfully, this problem has a simple solution: load your container query library in the `head`, without async or defer. Doing so will set your first paint back by a bit, but the payoff is worth it: no jarring jank.
 </aside>
@@ -1535,7 +1539,12 @@ If you really want to make a difference, when these libraries end up working for
 </aside>
 </section>
 
-<section>
+<section style="
+	background-image: url(images/carpe-query-starburst.svg);
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: center;
+">
 <h1>Carpe query.</h1>
 <aside class="notes">
 I don't know whether any of the libraries that exist today will become as popular as, say, JQuery ever was. I don't want to speculate on when container-query-like features will become a part of real, official CSS. And while I love the lofty ideals of Houdini and bottom-up web platform development, the last thing I want to do is hold container queries hostage until Houdini is ready. The web needed container queries years ago. I'll take them however they come.
@@ -1550,6 +1559,9 @@ So use them! Do it for the platform, and do it for yourself.
 
 <section class="title">
 <h1>Thanks!</h1>
+<p><a href="https://twitter.com/etportis">@etportis</a></p>
+<p><a href="">https://ericportis.com/talks/contain-your-excitement</a></p>
+<p><a href="">https://github.com/eeeps/contain-your-excitement</a></p>
 <aside class="notes">
 
 </aside>

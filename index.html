@@ -13,6 +13,25 @@
 </head>
 <body>
 
+<!--
+# TODO
+
+# content
+
+[ ] last slides
+[x?] clarify async + why JS over CSS
+[ ] modular ilustration
+[ ] intro illustration
+[ ] make the word "jank" jiggle
+
+## get ready for public access
+
+[ ] incorperate https://github.com/que-etc/resize-observer-polyfill
+[ ] figure out some kind of not-secret UI for pageup/pagedown
+[ ] intersectionObserver polyfil too, then?
+
+-->
+
 <section id="1" class="title">
 	<h1>
 		<span>Contain</span>
@@ -183,8 +202,7 @@ We’ll get into the distinction between “element” and “container” queri
 
 
 <section class="center">
-<p>Whatever you call them, they’re</p>
-<h1 style="margin-top: 0.25em;">media queries for elements</h1>
+<h1 style="margin-top: 0.25em;">= media queries for elements</h1>
 <aside class="notes">
 And I’ll be using the terms to refer to an idea. In a nutshell: we should be able to adapt element’s styles based on their own state. Not just the state of the entire viewport.
 </aside>
@@ -613,7 +631,7 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 
 <section>
 <p>Please excuse a wildly simplified explanation of</p>
-<h1>How Browsers Work</h1>
+<h1>the rendering pipeline</h1>
 <aside class="notes">
 </aside>
 </section>
@@ -1038,7 +1056,7 @@ For those who, in 2017, still nurture hope, the message is loud and clear
 
 <section>
 <img src="images/css-containment.png" style="height: 60vh;" alt="screenshot of the CSS Containment Module Level 1 draft" />
-<h1><code class="language-css" style="font-size: 1rem; box-shadow: var(--box-shadow);">contain: strict;</code></h1>
+<h1><code class="language-css">contain: strict;</code></h1>
 <footer><p><a href="https://drafts.csswg.org/css-contain/">https://drafts.csswg.org/css-contain/</a></p></footer>
 </section>
 
@@ -1175,30 +1193,28 @@ What happens when those things collide?
 	<p class="bigemoji center">🐇</p>
 	<p>...and it needs to be FAST</p>
 	<aside class="notes">
-First load paint isn't actually all that important, relative to everything coming over the network.
-
-But after that, during resizes, animations, or user interactions – paint happens at the refresh rate of the display -- usually 60 times per second.
+Paint happens at the refresh rate of the display -- usually 60 times per second.
 	</aside>
 </section>
 
 <section>
 <h1 style="text-align: center; "><span style="font-size: 10rem; display: block; margin-bottom: -1.75rem;">16</span> milliseconds</h1>
 <aside class="notes">
-So that’s 16 milliseconds of time that the browser (and whatever javascript you may be running) have, to figure out  get a page ready for display. Especially on low-powered mobile devices, every one of those milliseconds is precious. 
+That means we have to complete all of our layout and paint work -- along with whatever javascript might get thrown into the mix -- once every 16 seconds. Especially on low-powered mobile devices, every one of those milliseconds is precious. 
 	</aside>
 </section>
 
 <section class="center">
 	<img src="images/smashingconf.png" alt="A screenshot of smashingconf.com with the dev tools open" style="height: 11em;" />
-	<p style="margin-top: -1em;">5ms best / 35ms worst</p>
+	<p style="margin-top: -0.5em;">5ms best / 35ms worst</p>
 	<aside class="notes">
 Let me give you a high-level sense of what that number means... My computer is not a low-powered mobile device, it’s a 15" macbook pro.
 
-And when I load a fairly simple, well-architected, responsive page that uses media queries, like, say SmashingConf.com, and measure the perf of the site while I resize the window a bunch, I can drill down with the dev tools and see that, most of these frames are happening right on schedule at 60FPS. And most of that time is idle, too – the browser is spending about 4-5 ms re-figuring layout and re-painting in response to the changing window size, but it has 10ms to spare.
+And when I load a fairly simple, well-architected, responsive page that uses media queries, like, say SmashingConf.com, and measure the perf of the site while I resize the window a bunch, I can drill down into the dev tools and see that, most of these frames are happening right on schedule at 60FPS. And most of the time between frames is idle, too – the browser is spending about 5-ish ms re-figuring layout and re-painting in response to the changing window size, but it has 10-ish ms to spare.
 
-We do actually drop a couple of frames every once and a while -- it looks here like I hit a major breakpoint right at the end of a 16ms beat here, and the browser had to spend a chunk of time calculating and painting the new, significantly different layout, and we ended up missing a couple of frames... bad luck, but still, visually, the experience of resizing this page is nearly seamless.
+We do actually drop a couple of frames every once and a while -- it looks here like I hit a major breakpoint right at the end of a 16ms beat here, and the browser had to spend a chunk of time calculating and painting the new, significantly different layout, and we ended up missing a couple of frames... bad luck, but still, visually, the experience of resizing this page is seamless.
 
-So that gives you a little bit of a sense, maybe of the baseline we're working with - of what that 16ms budget actually feels like, in practice.
+So that gives you a little bit of a sense, maybe of the baseline we're working with - of what that 16ms budget actually means, in practice.
 	</aside>
 </section>
 
@@ -1218,9 +1234,9 @@ So let's talk about container queries, and how they fit in.
 
 Here’s our pipeline again, with the big loop
 
-Even if we've figured out how to prevent infinite loops, and even if we re-architect browsers to be able to walk backwards, to do *a* loop – container queries, fundamentally, require taking one or more trips around the loop. Basing styles on styles and layout on layout is literally the whole point.
+Even if we've figured out how to prevent infinite loops, and even if we re-architect browsers to be able to *do* loops – container queries, fundamentally, require taking one or more trips around the loop. Basing styles on styles and layout on layout is literally the whole point.
 
-Every trip around the loop takes time. And if we start using container queries as liberally as we use media queries, today – container-querying all the things and especially nesting container queried components within container-queried components – we might be taking dozens or even hundreds of trips around the loop, each frame.
+Every trip around the loop takes time. And if we start using container queries as liberally as we use media queries, today – container-querying all the things or especially nesting container queried components within container-queried components – we might be taking dozens or even hundreds of trips around the loop, each frame.
 
 That's bad for users.
 
@@ -1231,24 +1247,30 @@ Let's look at an example.
 <section>
 <img src="images/eqcss.png" alt="EQCSS homepage screenshot" />
 <aside class="notes">
-But first, briefly - I’ve already mentioned one polyfill – Martin Auswoger’s cq-prolyfill – here’s another: Tommy Hodgin’s EQCSS. Tommy has done more work than anyone, anywhere, advocating for Container Queries. He’s built this pollyfill, stuffed it with features, and is amassing a frankly staggering library of demos. So I asked him for his worst-performing demo.
+The example uses Tommy Hodgin’s EQCSS. Tommy Hodgins has done more work than anyone, anywhere, advocating for Container Queries. He’s built this pollyfill, stuffed it with features, and is amassing a frankly staggering library of demos. I asked him for his worst-performing demo.
 </aside>
 </section>
 
 <section class="center">
-<img src="images/pricing-chart.png" alt="A screenshot of the pricing comparison which performed so badly" />
-<p>30ms best / 100ms worst</p>
+<img src="images/pricing-chart.png" alt="A screenshot of the pricing comparison which performed so badly" style="height: 11em;" />
+<p style="margin-top: -0.5em;">40ms best / 150ms worst</p>
 <aside class="notes">
-He kindly sent me this pricing comparison chart. And when I resize this, well, it's not pretty. The worst frames here are taking an order of magnitude more time than browsers like them to -- 150ms -- we’re missing ten frames in a row, here. Often. If you drill down and look what’s taking all of that time, Chrome Dev Tools shows you all of these little purple layout boxes with bright red corners, signifying forced reflows that the plugin needed to do as part of its container-querying-work. A lot of those represent small trips around this plugin’s implementation of the element-query loop for some subtree of the page.
+And he kindly sent me this pricing comparison chart. Which, when I resize it, well – it's complicated.
+
+First of all, the *visual* performance is more or less ok, but feels just a little bit off, a little weird.
+
+Drilling into the dev tools, we can see why. EQCSS throttles itself, and waits 200ms between executions. This lets a bunch of normal, speedy frames happen in between evaluations.
+
+But every time EQCSS’ resize handler does run, it takes a minumum of 40ms, which means we’re missing a three or four frames. And the worst frames here are blowing the budget by an order of magnitude -- they take 160ms -- we’re missing ten frames in a row. If you drill down and look what’s taking all of that time, Chrome Dev Tools shows you all of these little purple layout boxes with bright red corners, signifying forced reflows that the plugin needed to do as part of its container-querying-work. A lot of those represent small trips around this plugin’s particular implementation of the element-query loop for some subtree of the page. Add them up, and you get 6fps performance, instead of 60.
 </aside>
 </section>
 
 
 <section class="center">
 <img src="images/shopify.png"  alt="Two screenshots of the Shopify admin page, showing how it responsively adapts" />
-<p>Shopify <a href="http://www.creativebloq.com/features/how-to-make-responsive-web-apps-with-container-queries">implemented</a> container queries!</p>
+<p>Shopify <a href="http://www.creativebloq.com/features/how-to-make-responsive-web-apps-with-container-queries">implemented</a> (and then un-implemented) container queries</p>
 <aside class="notes">
-And indeed - bad performance is what killed what was, to my knowledge, the first big deal in-production implementation of container queries, on Shopify's admin pages. [Jonathan Snook, who I think is in the audience today, led the implementation], which they’ve since moved away from.
+And indeed - bad layout performance killed what was, to my knowledge, the first big-deal in-production implementation of container queries, on Shopify's admin pages. [Jonathan Snook, who I think is in the audience today, led the implementation, and has written and spoken about it -- seek those articles out, they were a huge help to me, putting together this talk]. Anyways, shopify built and deployed real-life container queries -- only to, after a year or so, move away from them.
 </aside>
 </section>
 
@@ -1267,25 +1289,23 @@ They were too slow. But boy do we miss them.
 </section>
 
 <section class="title">
-<p>Paths forward</p>
+<h1>Paths forward</h1>
 <aside class="notes">
-So, where does that leave us?
+So, that’s depressing. Where does that leave us? How do we move forward?
 
-I'm happy to report that some very, very smart people have some very good ideas and are actively working on pieces of the puzzle.
+I'm happy to report that some very smart people have some very good ideas and are actively working on pieces of the puzzle.
 </aside>
 </section>
 
-<section>
-<h1>Containment</h1>
-<p>to the rescue?</p>
+<section class="center">
+<img src="images/containment-fast.jpg" alt="Two summaries of layout performance, showing the enormous speedup enabled by `contain: layout;`." style="height: 5em; margin: 0.5em auto; border-radius: 0.125em;" />
+<h1><code class="language-css">contain: strict;</code> <br/> to the <a href="https://developers.google.com/web/updates/2016/06/css-containment">rescue?</a></h1>
 <aside class="notes">
-The first puzzle piece, we've already mentioned, actually. CSS Containment, in addition to getting us out of the infinite container query loop problem, may actually help offset some of the speed penalties inherent to container queries, too. When we prevent children from being able to influence the size or style of their parents, turns out, we can usefuly paralellize and optimize a bunch of layout work. So perhaps, a solution that brought a lot of both container queries but also layout containment to the web, wouldn't be so bad for layout performance after all.
+The first puzzle piece, we've already mentioned, actually: CSS Containment. I said before that Containment might be the thing that prevents us from creating infinite container query loops – well, it might help offset some of the performance impact of container queries, too. When we prevent children from being able to influence the size, layout, or appearance of their parents – turns out – browsers can usefuly limit and optimize a bunch of layout work. So perhaps, a solution that brought a lot of both container queries **but also** style containment to the web, wouldn't be so bad for performance after all.
 
-I haven’t done a lot of testing here myself, but Paul Lewis published an example when the contain property landed in Chrome, wherein the layout time for a page dropped from 50-something ms down to 0.05ms, all because of this one weird CSS property.
+I haven’t done a lot of testing here myself, but Paul Lewis published this example when the `contain` property landed in Chrome, showing a re-layout time dropping from 50-something ms all the way down to 0.05ms, all because of this one weird CSS property.
 
-https://developers.google.com/web/updates/2016/06/css-containment
-
-Seems promising?
+I dunno. Seems promising?
 </aside>
 </section>
 
@@ -1295,81 +1315,245 @@ Seems promising?
 <aside class="notes">
 The second idea: make sure that, even if our container querying is slow, we minimize the damage that we’re doing to users’ experiences by doing the work asynchronously.
 
-Browsers respond to Media Queries synchronously. Which is to say, immediately after a media query toggles between true and false, the browser’s entire world stops for as long as it needs to so that it can respond to the change.
+Browsers respond to Media Queries synchronously. Which is to say, when a media query toggles between true and false, the browser’s entire world stops for as long as it needs to so that it can respond to the change.
 
-If we can't make container queries as performant as media queries, perhaps we can make them a little less world-stopping. We can let the browser re-schedule container query work, or even move it to another thread, so that we can continue to keep the rest of the user’s experience from feeling "stalled" or "stuck".
+If we can't make container queries as performant as media queries, perhaps we can make them a little less world-stopping. We can let the browser re-schedule container query work, or maybe even push it to the next frame, so that we can continue to keep the rest of the user’s experience from feeling "stalled" or "stuck".
 
 I’m happy to report that there’s a working implementation of this idea too, behind a flag in Chrome: 
 </aside>
 </section>
 
-<section>
-<h1>ResizeObserver</h1>
+<section class="center">
+<img src="images/resizeobserver.png" style="height: 8em; margin: 0.5em auto;" alt="A screenshot of the ResizeObserver spec" />
+<h1>I <span style="color: red; text-shadow: 0.05em 0.05em 0.1em rgba(0,0,0,0.3); margin-right: 0.4ch;">❤</span>️ResizeObserver</h1>
 <aside class="notes">
-ResizeObserver.
+And it's called ResizeObserver.
 
-The more I learn about ResizeObserver, the more I love it. It’s a purpose-built Container Query toolkit.
+The more I learn about ResizeObserver, the more I love it. It’s pretty much a purpose-built Container Query toolkit.
 
 First and foremost, it lets you attach resize event listeners directly to elements. The current batch of prolyfills have to listen to a whole bunch of possibly-related events –– like window resizes and DOM changes -- and then check to see if any element resizing actually happened.
 
-ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry that the browser is already maintaining. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces a reflow to insure that the queried styles are up-to-date. ResizeObserver gives you access to fresh element geometry far more cheaply.
+ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces a reflow to insure that the queried styles are up-to-date. ResizeObserver gives you access to fresh element geometry far more cheaply.
 
-Next up is what we started with: asynchronusness. The callbacks that you register with ResizeObserver are treated as what browsers call "microtasks." Which means that the browser doesn’t drop everything and run them on the main thread as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This is really important, actually. It ensures that you're not doing any work too early -- you're not going to be surprised by any additional layout changes that you weren't expecting -- or too late -- the browser will wait and paint when you're done. Most importantly, batched-up asynchronous callbacks don’t interrupt or forestall any other super-important intra-frame work - like, say, responding to user input.
+Next up is what we started with: asynchronusness. The callbacks that you register with ResizeObserver are treated as what browsers call "microtasks." Which means that the browser doesn’t drop everything and run them on the main thread as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This ensures that you're not doing any work too early -- you're not going to be surprised by any additional layout changes that you weren't expecting. And you're not going to be doing it too late, either -- as long as it doesn't take too long, you can be sure you'll get that work in before the next paint. Most importantly, batched-up asynchronous callbacks don’t interrupt any other super-important intra-frame work - like, say, responding to user input.
 
-Oh! And! ResizeObserver also features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→response→layout→response→layout→response loops. But it does use a thoughtful strategy – based on nesting-levels - to make sure that it breaks out of those loops in sensible ways in order to paint once a frame.
+Oh! And! ResizeObserver *also* features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→response→layout→response→layout→response loops. But it does use a thoughtful strategy – based on nesting-levels - to make sure that it breaks out of those loops in sensible ways, so that the browser can paint, deal with other work that it's doing, and then take one more trip around your infinite loop before the **next** frame.
 
-You've already seen examples of that. This slide deck, the one right in front of you now, is running a simple, ResizeObserver-based container-query implementation that I slapped together for the purposes of this talk. All of the looping examples that I've shown you flicker between states exactly once per frame, without freezing, stuttering, throwing a call stack exception, or preventing me from scrolling or otherwise interacting with the page, because they were built with ResizeObserver.
+You've already seen examples of that. This very slide deck, the one right in front of you now, is running a simple, ResizeObserver-based container-query implementation that I slapped together for the purposes of this talk. All of the looping examples that I've shown you flicker between states exactly once per frame, without freezing, stuttering, throwing a call stack exception, or preventing me from interacting with the page, because they were built with ResizeObserver.
 
-In short, ResizeObserver -- especially when combined with explicit style containment -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
+In short, ResizeObserver -- perhaps combined with explicit style containment -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
 
-But, of course, we want to use them in CSS.
+Now, wait, I hear you saying... don't we want them in CSS?
 
-Which brings me to the last big idea that the smartest spec and browser folks in the world have about how to solve Container Queries. It's where we come in.
+Which brings me to the last big idea that the smartest spec and browser folks in the world have about how to make Container Queries a thing. Excitingly, it's where we come in.
 </aside>
 </section>
 
-<section>
-<h1>Houdini</h1>
+<section class="center">
+<p class="bigemoji" style="margin-bottom: 0.6em;"><span style="display: block; margin-top: -1em; transform: rotate(180deg) translate(0ch, -0.9em); font-size: 1.2em;">🎩</span>🐇</p>
+<h1>✨Houdini✨</h1>
+
 <aside class="notes">
-How many of you have heard of Houdini?
+How many of you have heard of Houdini, or the Extensible Web Manifesto?
+
+Ok, well Houdini is a major effort by all sorts of browser and spec folks to give front end developers as much access as possible to the lower-level primitives of CSS. Houdini wants to *explain the magic* of CSS, in Javascript.
+
+The idea here is that, basically, top-down development of web platform features -- where browser vendors and spec authors make all of the big platform-level decisions, and humble front end developers simply receive those decisions and have to live with them -- is bad for everyone. Wouldn't it be better if everyday developers could implement experimental new features *themselves*? This would mean that new features were forged, not in long, hypothetical arguments on mailing lists, by Google, Apple, Mozilla and  Microsoft employees who write more C++ than they do CSS -- but out in the real world, via real useage, on real web pages. And then, eventually, if there’s consensus around good implementaitons of good ideas – they’ll get pulled into the platform and supported natively.
+
+The best example of this sort of model is, I think, JQuery. Which was iterated on for years – became the dominant thing that everybody used everywhere all of the time – and then, finally, had its best ideas adopted by Javascript and the DOM API.
+
+Houdini wants to pave the way for things like JQuery to happen in CSS.
+
+It's a grand idea and a good one. And, brought to fruition, it would mean that we, as a community, could take tools like ResizeObserver and `contain: strict`, use them to build a JavaScript based container queries implementation, and then wrap it up in a nice, tidy, custom CSS syntax. Which would be used it on real web pages and iterated on it in response to observed problems and optimized for real use cases - before being baked into the web platform as a whole.
+
+For a problem as big, and tricky, and in need of careful scoping, as container queries, you can hopefully see the benefits of this path to a solution.
+
+Well, I have some good news and some bad news.
+
 </aside>
 </section>
 
 
+<section class="center">
+<img src="images/ishoudinireadyyet.png" style="height: 10em;" alt="Houdini isn't ready yet." />
+<h1>No.</h1>
+<aside class="notes">
+Bad news first.
 
-<section>
-<h1>Prolyfills</h1>
-<p>cq-prollyfill, eqcss</p>
+Here's a handy website with the handy url ishoudinireadyyet.com
+
+As you can see, the answer is more or less, no.
+
+Heck, I didn't mention this earlier, but, while support in other engines will probably come soonish, even ResizeObserver and contain:strict are currently only implemented in Blink. So while we can start to build experimental things in Chrome, you can't really deploy them yet – and you might not be able to for years.
+
+That's some pretty bad news.
+
+</aside>
 </section>
 
 <section>
-<h1>Syntax!</h1>
-<ul>
-	<li>hacks...
-	<li>Pseudo-selector
-	<li>@ rules?
-	<li>generalized conditionals for css
+<h1>The Prolyfills are Alright</h1>
+<aside class="notes">
+But the good news is that a lack of widely-supported low-level tooling hasn't stopped a gaggle of intrepid developers from prolyfilling container-queries anyways. And the resulting  libraries are, I’m here to tell you, suprisingly good! They are - depending on your use case of course - ready for production use.
+</aside>
+</section>
+
+<section>
+<ul class="prolyfill-list">
+<li>
+<a href="https://github.com/ausi/cq-prolyfill" class="project">cq-prolyfill</a>
+<span class="by">by Martin Auswo<span class="diacritic">¨</span>ger</span>
+</li><li>
+<a href="http://elementqueries.com/" class="project">EQCSS</a> <span id="cssplus">(&amp; <a href="http://csspl.us/" class="project">CSSPlus</a>)</span>
+<span class="by">by Tommy Hodgins</span>
+</li><li>
+<a href="http://elq.io" class="project">ELQ</a>
+<span class="by">by Lucas Wiener</span>
+</li>
+<li>
+<a href="http://marcj.github.io/css-element-queries/" class="project">CSS Element Queries</a>
+<span class="by">by Marc J Schmidt</span>
+</li>
+<li>
+<a href="https://github.com/Snugug/eq.js" class="project">eq.js</a>
+<span class="by">by Sam Richard</span>
+</li>
+<li>
+<a href="https://github.com/ZeeCoder/container-query" class="project">Container Query</a>
+<span class="by">by Viktor Hubert</span>
+</li><li>
+<a href="https://github.com/lemonmade/container-queries" class="project">ContainerQueries</a>
+<span class="by">by Chris Sauve<span class="diacritic">´</span></span>
+</li><li style="text-align: right;">
+...and <a href="https://github.com/search?l=JavaScript&q=container+OR+element+queries&type=Repositories&utf8=%E2%9C%93">many more</a>!
+</li>
 </ul>
-</section>
-
-<section>
-<h1>write EQs, deploy MQs</h1>
-<p>translate as a build step</p>
-</section>
-
-<section>
-<h1>What can you do?</h1>
-<p>If you know some C and have been looking to get your hands dirty</p>
 <aside class="notes">
-Authors who are actually going to use the thing
-Spec editors who can specify it
-Browser vendors who are willing + able to implement it
-	- Yoav took the RICG over the line with responsive images, took a deep dive into performance, networking, and resource loading
-	- Layout engine is another dragon. The web needs another knight in shining armor.
+I’ve already mentioned a couple of my favorites.
 
+First, there’s Martin Auswoger’s cq-prolyfill, which implements the smart, infinite-loop-free container queries that we’ve already discussed. It’s biggest selling point, though, is performance — it does some very smart things to minimize the number of layouts that it needs to do, so despite not yet supporting ResizeObservers, in my limited testing – it’s totally, usably, speedy.
+
+Second, there’s Tommy Hodgin’s EQCSS, which is so darned full of features... it doesn't limit you to query widths and heights, you can query all sorts of things, like, say, the number of lines of text within an element, or the number of children that an element has.
+
+I should mention too, that Tommy just released a new set of libraries that he's calling CSSPlus, that allow you to do even more things -- including incorporating arbitrary javascript tests into your CSS selectors. This is super-interesting and super-powerful -- it's more or less a generalized evolution of EQCSS that lets you query, not just elements, but, well, anything. Forget element queries and container queries, these are more like Everything Queries -- check em out.
+
+Then there’s ELQ, which is the product of Lucas Weiner’s  master's thesis in computer science. It features a presumably very clever infinite loop resolver that I don't understand.
+
+eq.js by Sam Richard features yet another infinite loop resolver - they call it "greedy" - basically it looks at all of the states in the infinite loop and picks the biggest one? Kinda crazy, but I guess it works! My favorite thing about it is how it requestAnimatinoFrame to get async behavior, similar to ResizeObserver’s.
+
+Marc J Schmidt owns one of the longest-running and most popular implementations, which he and a small team of people are still developing. It's called CSS Element Queries and my favorite thing about it is, in the absence of proper Houdini access points to CSS, it plays a very neat trick with the CSS attribute selector...
+
+Victor Hubert has a brand new library called Container Query that’s the first to be built on ResizeObserver (and it ships with a ResizeObserver polyfill so that you can actually use it, now)...
+
+I should also mention that the code that Shopify deployed, that I mentioned earlier, is actually open source too, and lives in a library called ContainerQueries...
+
+And if you search github for "container queries" or "element queries" you could while away a few afternoons checking out many other container query solutions.
+
+Each of these prolyfills solves the circularity and performance problems inherent in Container queries in a different way. I’ve found them all to be suprisingly usable, and I think we should be using them!
+<script>
+	var section = document.currentScript.parentNode;
+	
+	section.init = ( ( section ) => {
+		section.listItems = section.querySelectorAll('.prolyfill-list li');
+		section.cssPlus = section.querySelector('#cssplus');
+		for ( let li of section.listItems ) {
+			if ( li !== section.listItems[ 0 ] ) {
+				li.classList.add( 'hidden' );
+			}
+		} 
+	} );
+	
+	section.events = [
+		{
+			do: ( section )   => { section.listItems[ 1 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 1 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.cssPlus.classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.cssPlus.classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 2 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 2 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 3 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 3 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 4 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 4 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 5 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 5 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 6 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 6 ].classList.add( 'hidden' ); }
+		},
+		{
+			do: ( section )   => { section.listItems[ 7 ].classList.remove( 'hidden' ); },
+			undo: ( section ) => { section.listItems[ 7 ].classList.add( 'hidden' ); }
+		}
+	];
+</script>
+</section>
+
+<section>
+<h1>Fight jank!</h1>
+<p>Load container queries libraries in the <code class="language-html" style="font-size: 0.625em;">&lt;head&gt;</code>
+<aside class="notes">
+One piece of advice, if you do: you may run into some jarring flashes of unstyled content, with these libraries. If you load them like you should be really be loading the rest of your javascript -- that is, after all of your HTML and CSS -- they’re going barge in like an obnoxiously late party guest and then immediately re-arrange all of your furniture.
+
+Thankfully, this problem has a simple solution: load your container query library in the `head`, without async or defer. Doing so will set your first paint back by a bit, but the payoff is worth it: no jarring jank.
 </aside>
 </section>
 
+
+<section>
+<h1>Why wait? Iterate!</h1>
+<aside class="notes">
+In any case, I’ll say it again: if you’re convinced that Container Queries are a good thing, and if you want them to become a core part of the web platform, the best thing that you can do, as a front end web developer, is to start using these libraries, today.
+
+Maybe on smaller or personal projects at first. I think you might be suprised, as I was, by how fast and useable they are. And as ResizeObserver and Houdini support rolls out, they’re going to become much, much better.
+
+If you run into problems, file issues.
+
+Tweet about your experiences. Write blog posts.
+
+Help container queries help you.
+</aside>
+</section>
+
+<section>
+<img alt="issue screenshot" />
+<p>For extra credit...</p>
+<h1><a href="github">document your use cases!</a></h1>
+<aside class="notes">
+If you really want to make a difference, when these libraries end up working for you, and *especially* when they don't, document your use case in a place where the web platform community can see it. The Responsive Issues Community Group has taken up the mantle of shepherding some kind of eventual Container Query spec into existence, and right now the main focus within the Group is defining use cases and requirements. We’ve put up a spiffy skeleton "Use Cases and Requirements" doc, but at the moment, it only contains one very big and very general use case, which is modular components. If you end up thinking of, or solving, or failing to solve, a use case with Container Queries, comment on this issue, and explain what you're doing, or trying to do – the RICG wants to know.
+</aside>
+</section>
+
+<section>
+<h1>Carpe query.</h1>
+<aside class="notes">
+I don't know whether any of the libraries that exist today will become as popular as, say, JQuery ever was. I don't want to speculate on when container-query-like features will become a part of real, official CSS. And while I love the lofty ideals of Houdini and bottom-up web platform development, the last thing I want to do is hold container queries hostage until Houdini is ready. The web needed container queries years ago. I'll take them however they come.
+
+So I guess my big takeaway for you all is: they're already here!
+
+If you like the idea of container queries, don’t wait for native support to decsend from the heavens. These prolyfills give YOU a better way to build web PAGES -- right now! And they embody a better way for ALL of us to build the web PLATFORM – together.
+
+So use them! Do it for the platform, and do it for yourself.
+</aside>
+</section>
+
+<section class="title">
+<h1>Thanks!</h1>
+<aside class="notes">
+
+</aside>
+</section>
 
 
 </body>

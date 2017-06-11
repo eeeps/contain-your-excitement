@@ -27,6 +27,11 @@ h1, h2, h3, h4, h5, h6 {
 	margin: 0;
 }
 
+h1 code {
+	font-size: 1rem;
+	box-shadow: var(--box-shadow);
+}
+
 p, ul, ol, dl {
 	line-height: 0.8265;
 	font-family: 'SooperSerifThinCondensed';
@@ -167,7 +172,7 @@ pre {
 }
 
 footer {
-	font-size: 0.75em;
+	font-size: 0.625em;
 }
 
 .notes { 
@@ -232,4 +237,32 @@ twitterwidget::shadow .Tweet-brand {
 
 .mailing-list .meta {
 	color: #aaa;
+}
+
+.diacritic {
+	margin-left: -0.8ch;
+	margin-right: -0.05ch;
+	position: relative;
+	top: -0.35em;
+	font-size: 0.9em;
+}
+
+.prolyfill-list {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	column-count: 2;
+	max-height: 100vh;
+}
+.prolyfill-list li {
+	margin: 0.25em;
+}
+.prolyfill-list .project {
+	font-family: 'SooperSansThick'
+}
+.prolyfill-list .by {
+	display: block;
+	text-transform: uppercase;
+	font-size: 0.75rem;
+	margin-top: 0.25em;
 }

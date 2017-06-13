@@ -1486,17 +1486,17 @@ It's called ResizeObserver.
 
 The more I learn about ResizeObserver, the more I love it. It’s pretty much a purpose-built Container Query toolkit.
 
-First and foremost, ResizeObserver lets you attach resize event listeners directly to elements. The current batch of prolyfills have to listen to a whole bunch of possibly-related events –– like window resizes and DOM changes -- and then check to see if any element resizing actually happened.
+First and foremost, ResizeObserver lets you attach resize event listeners directly to elements. The current batch of prolyfills have to listen to a whole bunch of possibly-related events –– like window resizes and DOM changes -- and then check to see if any element resizing actually happened, after the fact. ResizeObserver’s primary purpose is to let us observe elements directly.
 
-ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry. Current prolyfills all have to make extensive use of element.getComputedStyles, which forces a reflow to insure that the queried styles are up-to-date. ResizeObserver gives you access to fresh element geometry far more cheaply.
+ResizeObserver also provides access to a stripped-down set of very-cheap-to-query element geometry. Current prolyfills all have to make extensive use of element.getComputedStyle(), which forces a reflow to insure that the queried styles are up-to-date. ResizeObserver gives you access to fresh element geometry far more cheaply.
 
-Next up, the main event: asynchronusness. The callbacks that you register with ResizeObserver are treated as what browsers call "microtasks." Which means that the browser doesn’t have to drop everything and run them to completion on the main thread as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This ensures that you're not doing any work too early -- you're not going to be surprised by layout changes happening under your nose. And you're not going to be doing it too late, either -- as long as it doesn't take too long, you can be sure you'll get that work in before the next paint. Most importantly, batched-up microtasks don’t interrupt any other super-important intra-frame work - like, say, responding to user input - and if they take too long to run, browsers are entirely free to push them to the next frame, so that we don't end up killing the frame rate.
+Next up, the main event: asynchronus execution. The callbacks that you register with ResizeObserver are treated as what browsers call "microtasks." Which means that the browser doesn’t have to drop everything and run them to completion as soon as a resize happens. Instead, they're batched up and run at a precise, later time: just after the next layout and just before the next paint. This ensures that you're not doing any work too early -- you're not going to be surprised by any layout changes happening under your nose. Better yet, batched-up microtasks don’t interrupt any other super-important intra-frame work - like, say, responding to user input - and if they do take too long to run, browsers are entirely free to push them to the next frame, so that we don't end up killing the frame rate.
 
-Oh! And! ResizeObserver *also* features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→response→layout→response→layout→response loops. But it does use a thoughtful strategy – based on nesting-levels - to make sure that it breaks out of those loops in sensible ways, so that the browser can paint, deal with other work that it's doing, and wait to take take one more trip around your infinite loop until the **next** frame.
+Oh! And! ResizeObserver *also* features a smart way to deal with infinite loops. Because we're in Javascript land, it *can't* keep you from creating infinite layout→response→layout→response→layout→response loops. But it does use a thoughtful strategy – based on nesting-levels - to make sure that it breaks out of those loops in sensible ways, so that the browser can paint, deal with other work that it's doing, and wait to take take one more trip around the infinite loop until the **next** frame.
 
 You've already seen examples of that. This very slide deck, is running a simple, ResizeObserver-based container-query implementation that I slapped together for the purposes of this talk. All of the looping examples that I've shown you flicker between states exactly once per frame, without freezing, stuttering, throwing an exception, or preventing me from interacting with the page, because they were built with ResizeObserver.
 
-In short, ResizeObserver -- perhaps combined with explicit style containment -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
+In short, ResizeObserver -- perhaps combined with explicit CSS containment -- might give us everything that we need to implement smart, as-performant-as-possible container queries -- in JavaScript.
 </aside>
 </section>
 
@@ -1506,7 +1506,7 @@ In short, ResizeObserver -- perhaps combined with explicit style containment -- 
 <aside class="notes">
 Now, wait, I hear you saying... Javascript!? Don't we want them in CSS?
 
-Which brings me to the last big idea that the smartest spec and browser folks in the world have about how to make Container Queries a thing. Excitingly, it's where we come in.
+Which brings me to the last big idea about how to make Container Queries a thing. Excitingly, it's where we come in.
 </aside>
 </section>
 
@@ -1517,19 +1517,21 @@ Which brings me to the last big idea that the smartest spec and browser folks in
 <aside class="notes">
 How many of you have heard of Houdini, or the Extensible Web Manifesto?
 
-Ok, well Houdini is a major effort by all sorts of browser and spec folks to give front end developers as much access as possible to the lower-level primitives of CSS. Houdini wants to *explain the magic* of CSS, in Javascript.
+Ok, well Houdini is a major effort to give front end developers as much access as possible to the lower-level primitives of CSS. Houdini wants to *explain the magic* of CSS, in Javascript.
 
-The idea here is that, basically, top-down development of web platform features -- where browser vendors and spec authors make all of the big platform-level decisions, and humble front end developers simply receive those decisions and have to live with them -- is bad for everyone. Wouldn't it be better if everyday developers could implement experimental new features *themselves*? This would mean that new features were forged, not in long, hypothetical arguments on mailing lists -- but out in the real world, via real useage, on real web pages. And then, eventually, if there’s consensus around good implementaitons of good ideas – they’ll get pulled into the platform and supported natively.
+The idea here is that, basically, top-down development of web platform features -- where browser vendors and spec writers make the big platform-level decisions, and humble front end developers resign themselves to living with the consequences -- is bad for everyone. Wouldn't it be better if everyday developers could implement experimental new features *themselves*? This would mean that new features were forged, not in long, hypothetical arguments on mailing lists -- but out in the real world, via real useage, on real web pages. And then, eventually, if there’s consensus around good implementations of good ideas – they’ll get pulled into the platform and supported natively.
 
 The best example of this sort of model is, I think, JQuery. Which was iterated on for years – it became the dominant thing that everybody used everywhere all of the time – and then, eventually, its best ideas were adopted by the platform, natively.
 
 Houdini wants to pave the way for things like JQuery to happen in CSS.
 
-It's a grand idea and a good one. And, brought to fruition, it would mean that we, as a community, could take tools like ResizeObserver and `contain: strict`, use them to build a JavaScript based container queries implementation, and then wrap it up in a nice, tidy, custom CSS syntax. Which would be used it on real web pages and iterated on it in response to observed problems and optimized for real use cases - before being baked into the web platform as a whole.
+It's a grand idea and a good one. And, brought to fruition, it would mean that we, as a community, could take tools like ResizeObserver and `contain: strict`, use them to build a container queries in Javascript, and then wrap the implementation up in a nice, tidy, custom CSS syntax. Which would be used it on real web pages and iterated on it in response to observed problems and optimized for real use cases - before being baked into the web platform.
 
-For a problem as big, and tricky, and in need of careful scoping, as container queries, you can see the appeal of this idea.
+For a problem as big, and tricky, and in need of careful scoping, as container queries, you can see the appeal of this.
 
 Well, I have some good news and some bad news.
+
+Bad news first.
 
 </aside>
 </section>
@@ -1539,13 +1541,11 @@ Well, I have some good news and some bad news.
 <img src="images/ishoudinireadyyet.png" style="height: 10em;" alt="Houdini isn't ready yet." />
 <h1>No.</h1>
 <aside class="notes">
-Bad news first.
-
-Here's a handy website with the handy url ishoudinireadyyet.com
+Here's a handy website with, the URL ishoudinireadyyet.com
 
 As you can see, the answer is more or less, no.
 
-Heck, I didn't mention this earlier, but even ResizeObserver and contain:strict are currently only implemented in Blink. So while we can start to build experimental things in Chrome, you can't really deploy them to the public web yet – and you might not be able to for years.
+Heck, I didn't mention this earlier, but even ResizeObserver and contain:strict are currently only implemented in Blink. So while we can start to build experimental things in Chrome, you can't really deploy them to the public web yet – and you might not be able to for *years.*
 
 That's some pretty bad news.
 
@@ -1555,7 +1555,7 @@ That's some pretty bad news.
 <section>
 <h1>The Prolyfills are Alright</h1>
 <aside class="notes">
-But the good news is that a lack of widely-supported low-level tooling hasn't stopped a gaggle of intrepid developers from macguyvering together some container-queries prolyfills, anyways. And the resulting libraries are, I’m here to tell you, surprisingly good!
+But the good news is that a lack of widely-supported low-level tooling hasn't stopped a gaggle of intrepid developers from MacGyvering together container-queries prolyfills, anyways. And the resulting libraries are, I’m here to tell you, surprisingly good!
 </aside>
 </section>
 
@@ -1592,9 +1592,9 @@ But the good news is that a lack of widely-supported low-level tooling hasn't st
 <aside class="notes">
 I’ve already mentioned a couple of my favorites.
 
-First, there’s Martin Auswöger’s cq-prolyfill, which implements the smart, infinite-loop-free container queries that we’ve already discussed. It’s biggest selling point, though, is performance — it’s particularly smart about minimizing the number of loops that it needs to do, so despite not yet supporting ResizeObservers, in my limited testing – it’s totally, usably, speedy.
+First, there’s Martin Auswöger’s cq-prolyfill, which implements the smart, infinite-loop-free container queries that we’ve already discussed. It’s biggest selling point, to me, though, is performance — it’s particularly smart about minimizing the number of loops that it needs to take. So despite not yet supporting ResizeObservers, in my limited testing – it is totally, usably, speedy.
 
-Second, there’s Tommy Hodgin’s EQCSS, which is so darned full of features... EQCSS doesn't limit you to query widths and heights, you can query all sorts of things, like, say, the number of lines of text within an element, or the number of children that an element has.
+Second, there’s Tommy Hodgin’s EQCSS, which, more than any other library, shows you what's *possible* with this stuff. EQCSS doesn't limit you to querying widths and heights. You can query all sorts of things, like, say, the number of lines of text within an element, or the number of children that an element has.
 
 I should mention too, that Tommy just released a new set of libraries that he's calling CSSPlus, that allow you to do even more -- including incorporating arbitrary javascript tests into your CSS selectors. This is super-interesting and super-powerful -- it's more or less a generalized evolution of EQCSS that lets you query, not just elements, but, well, anything.
 

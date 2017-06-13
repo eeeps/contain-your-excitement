@@ -5,20 +5,20 @@
 
 @font-face {
 	font-family: 'SooperSansThick';
-	src: url('/fonts/sooper/soopersans-thick-webfont.eot');
-	src: url('/fonts/sooper/soopersans-thick-webfont.eot?#iefix') format('embedded-opentype'),
-	     url('/fonts/sooper/soopersans-thick-webfont.woff') format('woff'),
-	     url('/fonts/sooper/soopersans-thick-webfont.ttf') format('truetype');
+	src: url('../fonts/sooper/soopersans-thick-webfont.eot');
+	src: url('../fonts/sooper/soopersans-thick-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('../fonts/sooper/soopersans-thick-webfont.woff') format('woff'),
+	     url('../fonts/sooper/soopersans-thick-webfont.ttf') format('truetype');
 	font-weight: bold;
 	font-style: normal;
 }
 
 @font-face {
 	font-family: 'SooperSerifThinCondensed';
-	src: url('/fonts/sooper/sooperserif-thincondensed-webfont.eot');
-	src: url('/fonts/sooper/sooperserif-thincondensed-webfont.eot?#iefix') format('embedded-opentype'),
-	     url('/fonts/sooper/sooperserif-thincondensed-webfont.woff') format('woff'),
-	     url('/fonts/sooper/sooperserif-thincondensed-webfont.ttf') format('truetype');
+	src: url('../fonts/sooper/sooperserif-thincondensed-webfont.eot');
+	src: url('../fonts/sooper/sooperserif-thincondensed-webfont.eot?#iefix') format('embedded-opentype'),
+	     url('../fonts/sooper/sooperserif-thincondensed-webfont.woff') format('woff'),
+	     url('../fonts/sooper/sooperserif-thincondensed-webfont.ttf') format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }

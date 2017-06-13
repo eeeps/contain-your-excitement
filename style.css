@@ -258,7 +258,8 @@ twitterwidget::shadow .Tweet-brand {
 .prolyfill-list li {
 	margin: 0.25em;
 }
-.prolyfill-list .project {
+.prolyfill-list .project,
+.thick {
 	font-family: 'SooperSansThick'
 }
 .prolyfill-list .by {

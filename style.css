@@ -184,7 +184,7 @@ footer {
 	text-transform: uppercase;
 	padding: 0.25em;
 	padding-bottom: 0.05em;
-	rotate: -7deg;
+	transform: rotate(-7deg);
 	background-color: var(--light-bg);
 	box-shadow: var(--box-shadow);
 	font-family: SooperSansThick;

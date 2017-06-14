@@ -44,7 +44,7 @@ for ( slide of slides ) {
 // aka what to do when I hit the clicker
 window.addEventListener( 'keydown', function( event ) {
 
-	if ( event.keyCode == 34 ) { // page down
+	if ( event.keyCode == 34 || event.keyCode == 39 ) { // page down || right arrow
 		event.preventDefault();
 		
 		// if there are events to do, do ’em
@@ -66,7 +66,7 @@ window.addEventListener( 'keydown', function( event ) {
 		
 		}
 		
-	} else if ( event.keyCode == 33 ) { // page up
+	} else if ( event.keyCode == 33 || event.keyCode == 37 ) { // page up || back arrow
 
 		event.preventDefault();
 		

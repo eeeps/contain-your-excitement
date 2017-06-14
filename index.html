@@ -1069,11 +1069,10 @@ The goal here is to break the loop. If letting elements query *themselves* is so
 }
 </code></pre>
 
-<!--
 <div class="poo layer">
 <img style="width:7.5em;" src="images/pile-of-poo.png" alt />
 </div>
--->
+
 <script>
 	var section = document.currentScript.parentNode;
 
@@ -1081,8 +1080,8 @@ The goal here is to break the loop. If letting elements query *themselves* is so
 		section.codeEl = section.querySelector("code.language-css");
 		section.wrapper = section.querySelector(".wrapper");
 		section.block = section.querySelector(".block");
-		// section.poo = section.querySelector(".poo");
-		// section.poo.classList.add('hidden');
+		section.poo = section.querySelector(".poo");
+		section.poo.classList.add('hidden');
 		section.codeElContents = [
 			section.codeEl.textContent,
 			".wrapper {\n\
@@ -1129,7 +1128,7 @@ The goal here is to break the loop. If letting elements query *themselves* is so
 				section.codeEl.innerHTML = Prism.highlight(section.codeElContents[ 1 ], Prism.languages.css);
 				section.block.style.width = "100%";
 			}
-		} /* ,
+		},
 		{
 			do: ( section ) => {
 				section.poo.classList.remove( 'hidden' );
@@ -1137,7 +1136,7 @@ The goal here is to break the loop. If letting elements query *themselves* is so
 			undo: ( section ) => {
 				section.poo.classList.add( 'hidden' );
 			}
-		} */
+		}
 	];
 </script>
 <aside class="notes">
@@ -1424,7 +1423,6 @@ Drilling into the dev tools, we can see why. EQCSS throttles itself, and waits 2
 But every time EQCSS’ resize handler does run, it takes a minumum of 40ms, which means we’re missing a three or four frames. And the worst frames here are blowing the budget by an order of magnitude -- they take 160ms -- we’re missing ten frames in a row. If you drill down and look what’s taking all of that time, Chrome Dev Tools shows you all of these little purple layout boxes with bright red corners, signifying forced reflows that the plugin needed to do as part of its container-querying-work. Each one represents a small trip around this plugin’s particular implementation of the element-query loop for some subtree of the page. Add them up, and you get 6fps performance, instead of 60.
 </aside>
 </section>
-
 
 <section class="center">
 <img src="images/shopify.png"  alt="Two screenshots of the Shopify admin page, showing how it responsively adapts" style="max-height: 80vh;" />
